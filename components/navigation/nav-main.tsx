@@ -1,5 +1,5 @@
 import React from "react";
-import { SidebarGroup, SidebarMenu } from "./ui/sidebar";
+import { SidebarGroup, SidebarMenu } from "../ui/sidebar";
 import NavigationItem from "@/types/navigation-item";
 
 const NavMain = ({ items }: { items: NavigationItem[] }) => {

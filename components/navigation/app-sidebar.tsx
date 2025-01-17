@@ -10,10 +10,10 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarRail,
-} from "./ui/sidebar";
+} from "../ui/sidebar";
 import { NavigationItems } from "@/lib/constanst";
 import Link from "next/link";
-import Logo from "./logo";
+import Logo from "../logo";
 
 const AppSidebar = () => {
 	return (
