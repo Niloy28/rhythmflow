@@ -25,7 +25,6 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -33,7 +32,6 @@ export function SignInForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
-	const router = useRouter();
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
@@ -48,28 +46,35 @@ export function SignInForm({
 			const result = await authClient.signIn.email({
 				email: values.email,
 				password: values.password,
+				callbackURL: "/",
 			});
 
-			if (!result.error) {
-				router.push("/");
-			} else {
+			if (result.error) {
+				let errorMsg: string;
+
+				if (result.error.status === 500) {
+					errorMsg = "An unexpected error occurred. Please try again later.";
+				} else {
+					errorMsg = "Your username or password is incorrect.";
+				}
+
 				toast({
 					variant: "destructive",
 					title: "Uh oh! Something went wrong.",
-					description: "Your username or password is incorrect.",
+					description: errorMsg,
 				});
 			}
 		},
-		[router, toast]
+		[toast]
 	);
 
 	return (
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl">Login</CardTitle>
+					<CardTitle className="text-2xl">Sign In</CardTitle>
 					<CardDescription>
-						Enter your credentials below to login to your account
+						Enter your credentials below to sign in to your account
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -121,7 +126,7 @@ export function SignInForm({
 								className="w-full mt-4"
 								disabled={form.formState.isSubmitting}
 							>
-								Login
+								Sign In
 								{form.formState.isSubmitting && (
 									<Loader2 className="animate-spin" />
 								)}

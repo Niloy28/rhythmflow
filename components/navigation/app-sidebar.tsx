@@ -2,6 +2,7 @@ import React from "react";
 import {
 	Sidebar,
 	SidebarContent,
+	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarGroupLabel,
@@ -14,8 +15,9 @@ import {
 import { NavigationItems } from "@/lib/constanst";
 import Link from "next/link";
 import Logo from "../logo";
+import NavUser from "./nav-user";
 
-const AppSidebar = () => {
+const AppSidebar = async () => {
 	return (
 		<Sidebar collapsible="icon">
 			<SidebarHeader>
@@ -40,6 +42,9 @@ const AppSidebar = () => {
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
+			<SidebarFooter>
+				<NavUser />
+			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>
 	);

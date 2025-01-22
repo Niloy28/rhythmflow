@@ -25,7 +25,6 @@ import {
 } from "../ui/form";
 import { useCallback } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -34,7 +33,6 @@ export function SignupForm({
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
 	const { toast } = useToast();
-	const router = useRouter();
 	const form = useForm<z.infer<typeof signUpSchema>>({
 		resolver: zodResolver(signUpSchema),
 		defaultValues: {
@@ -52,11 +50,10 @@ export function SignupForm({
 				name: values.name,
 				password: values.password,
 				image: values.image ?? "",
+				callbackURL: "/",
 			});
 
-			if (!result.error) {
-				router.push("/");
-			} else {
+			if (result.error) {
 				toast({
 					variant: "destructive",
 					title: "Uh oh! Something went wrong.",
@@ -65,7 +62,7 @@ export function SignupForm({
 				});
 			}
 		},
-		[router, toast]
+		[toast]
 	);
 
 	return (
@@ -135,8 +132,8 @@ export function SignupForm({
 
 							<div className="mt-4 text-center text-sm">
 								Already have an account?{" "}
-								<Link href="/login" className="underline underline-offset-4">
-									Login here
+								<Link href="/signin" className="underline underline-offset-4">
+									Sign in here
 								</Link>
 							</div>
 						</form>
