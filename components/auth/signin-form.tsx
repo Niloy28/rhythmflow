@@ -26,12 +26,15 @@ import {
 } from "../ui/form";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 export function SignInForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
 	const router = useRouter();
+	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
 		defaultValues: {
@@ -42,14 +45,22 @@ export function SignInForm({
 
 	const onSubmit = useCallback(
 		async (values: z.infer<typeof signInSchema>) => {
-			await authClient.signIn.email({
+			const result = await authClient.signIn.email({
 				email: values.email,
 				password: values.password,
 			});
 
-			router.push("/");
+			if (!result.error) {
+				router.push("/");
+			} else {
+				toast({
+					variant: "destructive",
+					title: "Uh oh! Something went wrong.",
+					description: "Your username or password is incorrect.",
+				});
+			}
 		},
-		[router]
+		[router, toast]
 	);
 
 	return (
@@ -105,8 +116,15 @@ export function SignInForm({
 								)}
 							/>
 
-							<Button type="submit" className="w-full mt-4">
+							<Button
+								type="submit"
+								className="w-full mt-4"
+								disabled={form.formState.isSubmitting}
+							>
 								Login
+								{form.formState.isSubmitting && (
+									<Loader2 className="animate-spin" />
+								)}
 							</Button>
 							<div className="mt-4 text-center text-sm">
 								Don&apos;t have an account?{" "}

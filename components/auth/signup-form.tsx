@@ -26,11 +26,14 @@ import {
 import { useCallback } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export function SignupForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
+	const { toast } = useToast();
 	const router = useRouter();
 	const form = useForm<z.infer<typeof signUpSchema>>({
 		resolver: zodResolver(signUpSchema),
@@ -44,16 +47,25 @@ export function SignupForm({
 
 	const onSubmit = useCallback(
 		async (values: z.infer<typeof signUpSchema>) => {
-			await authClient.signUp.email({
+			const result = await authClient.signUp.email({
 				email: values.email,
 				name: values.name,
 				password: values.password,
 				image: values.image ?? "",
 			});
 
-			router.push("/");
+			if (!result.error) {
+				router.push("/");
+			} else {
+				toast({
+					variant: "destructive",
+					title: "Uh oh! Something went wrong.",
+					description:
+						"There was a problem with the request. Please try again later.",
+				});
+			}
 		},
-		[router]
+		[router, toast]
 	);
 
 	return (
@@ -115,7 +127,10 @@ export function SignupForm({
 							/>
 
 							<Button type="submit" className="w-full mt-4">
-								Sign Up
+								Sign Up{" "}
+								{form.formState.isSubmitting && (
+									<Loader2 className="animate-spin" />
+								)}
 							</Button>
 
 							<div className="mt-4 text-center text-sm">
