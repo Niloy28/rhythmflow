@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "TuneWave",
+	title: "RhythmFlow",
 	description: "An app to listen to free music",
 };
 
@@ -30,7 +30,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<SidebarProvider>
+				<SidebarProvider defaultOpen={false}>
 					<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
 						<AppSidebar />
 						<SidebarTrigger />

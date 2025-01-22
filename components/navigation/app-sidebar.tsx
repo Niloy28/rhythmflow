@@ -23,7 +23,7 @@ const AppSidebar = () => {
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>TuneWave</SidebarGroupLabel>
+					<SidebarGroupLabel>RhythmFlow</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{NavigationItems.map((item, index) => (
