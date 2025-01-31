@@ -12,7 +12,7 @@ import {
 	SidebarMenuItem,
 	SidebarRail,
 } from "../ui/sidebar";
-import { NavigationItems } from "@/lib/constanst";
+import { NavigationItems } from "@/lib/constants";
 import Link from "next/link";
 import Logo from "../logo";
 import NavUser from "./nav-user";
