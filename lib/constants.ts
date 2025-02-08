@@ -34,3 +34,10 @@ export const NavigationItems: NavigationItem[] = [
 		icon: CogIcon,
 	},
 ];
+
+export const imageTypes = [
+	"image/jpeg",
+	"image/jpg",
+	"image/png",
+	"image/webp",
+];
