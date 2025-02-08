@@ -1,6 +1,7 @@
 "use server";
 
 import { env } from "@/env/server";
+import db from "@/lib/db";
 import s3 from "@/lib/s3";
 import { computeSHA256 } from "@/lib/utils";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
@@ -37,11 +38,26 @@ export const createArtist = async (formData: FormData) => {
 		await computeSHA256(image)
 	);
 
-	await fetch(url, {
+	const response = await fetch(url, {
 		method: "PUT",
 		body: image,
 		headers: {
 			"Content-Type": image.type,
 		},
 	});
+
+	if (response.ok) {
+		try {
+			db.insertInto("artists")
+				.values({
+					name: formData.get("name") as string,
+					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
+				})
+				.executeTakeFirstOrThrow();
+		} catch (e) {
+			console.error(e);
+		}
+	} else {
+		console.error("Failed to upload image");
+	}
 };

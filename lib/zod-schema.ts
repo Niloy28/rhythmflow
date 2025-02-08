@@ -29,8 +29,8 @@ export const artistSchema = z.object({
 		.instanceof(FileList)
 		.refine((files) => files.length > 0, "Image is required")
 		.refine((files) => {
-			return files[0].size < 1024 * 1024 * 5;
-		}, "Image must be less than 5MB")
+			return files[0].size < 1024 * 1024 * 3;
+		}, "Image must be less than 3MB")
 		.refine(
 			(files) => imageTypes.includes(files[0].type),
 			"Image must be a jpeg, png or webp"
