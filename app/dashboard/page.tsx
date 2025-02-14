@@ -11,7 +11,7 @@ const DashboardPage = async () => {
 	}
 
 	return (
-		<Card className="m-6 p-2 flex flex-col">
+		<Card className="m-6 p-2 flex flex-col justify-center items-center">
 			<CardHeader>
 				<CardTitle>Dashboard</CardTitle>
 			</CardHeader>
