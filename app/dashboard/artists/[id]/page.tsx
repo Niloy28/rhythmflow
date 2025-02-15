@@ -1,3 +1,5 @@
+import BackLink from "@/components/dashboard/back-link";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -6,7 +8,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import db from "@/lib/db";
-import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -40,14 +41,17 @@ const ArtistDetailsPage = async ({
 					width={600}
 					height={600}
 				/>
+				<div className="flex gap-2 p-2 mt-2">
+					<Link href={`/dashboard/artists/${id}/edit`}>
+						<Button>Edit</Button>
+					</Link>
+					<Link href={`/dashboard/artists/${id}/delete`}>
+						<Button variant="destructive">Delete</Button>
+					</Link>
+				</div>
 			</CardContent>
 			<CardFooter>
-				<Link
-					className="flex gap-2 hover:cursor-pointer underline underline-offset-1"
-					href="/dashboard/artists"
-				>
-					<ArrowLeft /> <p>Back to artists</p>
-				</Link>
+				<BackLink target="artists" />
 			</CardFooter>
 		</Card>
 	);

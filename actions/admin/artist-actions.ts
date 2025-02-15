@@ -6,6 +6,7 @@ import s3 from "@/lib/s3";
 import { computeSHA256 } from "@/lib/utils";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { redirect } from "next/navigation";
 
 const createPresignedUrlForUpload = async (
 	fileName: string,
@@ -54,10 +55,20 @@ export const createArtist = async (formData: FormData) => {
 					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
 				})
 				.executeTakeFirstOrThrow();
+
+			redirect("/dashboard/artists");
 		} catch (e) {
 			console.error(e);
 		}
 	} else {
 		console.error("Failed to upload image");
 	}
+};
+
+export const deleteArtist = async (formData: FormData) => {
+	const id = formData.get("artist-id") as string;
+
+	await db.deleteFrom("artists").where("id", "==", parseInt(id)).execute();
+
+	redirect("/dashboard/artists");
 };
