@@ -46,7 +46,8 @@ const ArtistDeletePage = async ({
 					action={deleteArtist}
 					className="flex gap-2 justify-center items-center p-2 mt-4"
 				>
-					<Input name="artist-id" value={artist.id!} type="hidden" />
+					<Input name="id" value={artist.id!} type="hidden" />
+					<Input name="image_src" value={artist.image_src!} type="hidden" />
 					<Button variant="destructive">Delete</Button>
 					<Link href={`dashboard/artist/${artist.id}`}>
 						<Button>Cancel</Button>
