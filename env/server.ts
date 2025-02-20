@@ -16,6 +16,14 @@ export const env = createEnv({
 		ARTIST_BUCKET_NAME: z.string().min(1),
 		ALBUM_BUCKET_NAME: z.string().min(1),
 		SONG_BUCKET_NAME: z.string().min(1),
+		IMAGE_MAX_SIZE: z
+			.string()
+			.transform((val) => parseInt(val))
+			.pipe(z.number().int().positive()),
+		SONG_MAX_SIZE: z
+			.string()
+			.transform((val) => parseInt(val))
+			.pipe(z.number().int().positive()),
 	},
 	runtimeEnv: {
 		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
@@ -31,5 +39,7 @@ export const env = createEnv({
 		ARTIST_BUCKET_NAME: process.env.ARTIST_BUCKET_NAME,
 		ALBUM_BUCKET_NAME: process.env.ALBUM_BUCKET_NAME,
 		SONG_BUCKET_NAME: process.env.SONG_BUCKET_NAME,
+		IMAGE_MAX_SIZE: process.env.IMAGE_MAX_SIZE,
+		SONG_MAX_SIZE: process.env.SONG_MAX_SIZE,
 	},
 });

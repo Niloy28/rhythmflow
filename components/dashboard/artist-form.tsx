@@ -3,13 +3,9 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import { artistSchema } from "@/lib/zod-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "../ui/button";
-import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import SubmitButton from "./submit-button";
+import { Label } from "../ui/label";
 
 type ArtistDataType = {
 	id: number | null;
@@ -27,29 +23,6 @@ const ArtistForm = ({
 	action: (formData: FormData) => Promise<void>;
 }) => {
 	const [imageUrl, setImageUrl] = useState<string>(artist?.image_src || "");
-	const {
-		register,
-		handleSubmit,
-		formState: { isSubmitting, errors },
-	} = useForm<z.infer<typeof artistSchema>>({
-		resolver: zodResolver(artistSchema),
-	});
-
-	const onSubmit: SubmitHandler<z.infer<typeof artistSchema>> = async (
-		data
-	) => {
-		const formData = new FormData();
-		formData.append("id", artist?.id?.toString() || "");
-		formData.append("name", data.name);
-		formData.append("image", data.image[0]);
-		formData.append("old_image_src", artist?.image_src || "");
-
-		try {
-			await action(formData);
-		} catch (error) {
-			console.error(error);
-		}
-	};
 
 	return (
 		<Card className="flex flex-col m-6 p-2 w-2/3">
@@ -58,23 +31,22 @@ const ArtistForm = ({
 			</CardHeader>
 			<CardContent>
 				<form
-					onSubmit={handleSubmit(onSubmit)}
+					action={action}
 					className="flex flex-col justify-center items-center gap-2"
 				>
-					<Input id="id" value={artist?.id || ""} type="hidden" />
+					<Input name="id" value={artist?.id || ""} type="hidden" />
 					<Input
-						{...register("name")}
 						type="text"
-						id="name"
+						name="name"
 						defaultValue={artist ? artist.name : ""}
 					/>
-					{errors.name && (
-						<span className="text-red-500">{errors.name.message}</span>
-					)}
+
+					<Label className="text-red-500 text-3xl font-bold mt-2 border-4 border-red-500 border-spacing-2">
+						Image MUST BE UNDER 3MB
+					</Label>
 					<Input
-						{...register("image")}
 						type="file"
-						id="image"
+						name="image"
 						accept="image/*"
 						onChange={(e) => {
 							if (e.target.files) {
@@ -93,13 +65,8 @@ const ArtistForm = ({
 							</div>
 						</>
 					)}
-					{errors.image && (
-						<span className="text-red-500">{errors.image.message}</span>
-					)}
 
-					<Button type="submit" disabled={isSubmitting}>
-						{isSubmitting ? <Loader2 className="animate-spin" /> : "Submit"}
-					</Button>
+					<SubmitButton />
 				</form>
 			</CardContent>
 		</Card>
