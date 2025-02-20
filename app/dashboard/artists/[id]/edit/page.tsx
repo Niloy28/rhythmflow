@@ -26,7 +26,7 @@ const ArtistEditPage = async ({
 			<BackLink target="artists" />
 			<BackLink target={`artists/${artist.id}`} name={artist.name} />
 			<ArtistForm
-				title="Create New Artist"
+				title="Edit Artist"
 				artist={{
 					id: artist.id,
 					name: artist.name,

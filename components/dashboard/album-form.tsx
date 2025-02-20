@@ -77,11 +77,7 @@ const AlbumForm = ({
 
 					<Select
 						name="artist_id"
-						defaultValue={
-							album?.artist_id
-								? artists.find((artist) => artist.id === album.artist_id)?.name
-								: ""
-						}
+						defaultValue={album?.artist_id.toString() ?? undefined}
 					>
 						<SelectTrigger>
 							<SelectValue placeholder="Select an artist" />

@@ -2,7 +2,7 @@
 
 import { env } from "@/env/server";
 import db from "@/lib/db";
-import { uploadFileToBucket } from "@/lib/server-utils";
+import { deleteFileFromBucket, uploadFileToBucket } from "@/lib/server-utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -62,4 +62,38 @@ export const createAlbum = async (formData: FormData) => {
 
 	revalidatePath("/dashboard/albums");
 	redirect("/dashboard/albums");
+};
+
+export const editAlbum = async (formData: FormData) => {
+	const { name, image, artist_id, year } = validateFormData(formData);
+
+	const id = parseInt(formData.get("id") as string);
+	const oldImageSrc = formData.get("old_image_src") as string;
+
+	// Delete the old image from bucket
+	await deleteFileFromBucket(
+		oldImageSrc.split("/").pop()!,
+		env.ALBUM_BUCKET_NAME
+	);
+
+	// Upload the new image
+	const response = await uploadFileToBucket(image, env.ALBUM_BUCKET_NAME);
+
+	if (response.ok) {
+		try {
+			db.updateTable("albums")
+				.set({
+					name,
+					year,
+					artist_id,
+					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
+				})
+				.where("id", "=", id)
+				.executeTakeFirstOrThrow();
+		} catch (e) {
+			console.error(e);
+		}
+	} else {
+		console.error("Failed to upload image");
+	}
 };
