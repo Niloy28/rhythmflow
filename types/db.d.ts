@@ -25,6 +25,14 @@ export interface Account {
   userId: string;
 }
 
+export interface Albums {
+  artist_id: number | null;
+  id: Generated<number | null>;
+  image_src: string;
+  name: string;
+  year: number;
+}
+
 export interface Artists {
   id: Generated<number | null>;
   image_src: string;
@@ -63,6 +71,7 @@ export interface Verification {
 
 export interface DB {
   account: Account;
+  albums: Albums;
   artists: Artists;
   session: Session;
   user: User;

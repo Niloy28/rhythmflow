@@ -69,7 +69,7 @@ export const editArtist = async (formData: FormData) => {
 		try {
 			db.updateTable("artists")
 				.set({
-					name: name,
+					name,
 					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
 				})
 				.where("id", "=", id)
