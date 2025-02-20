@@ -2,55 +2,9 @@
 
 import { env } from "@/env/server";
 import db from "@/lib/db";
-import s3 from "@/lib/s3";
-import { computeSHA256 } from "@/lib/utils";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { deleteFileFromBucket, uploadFileToBucket } from "@/lib/server-utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-const createPresignedUrlForUpload = async (
-	fileName: string,
-	fileType: string,
-	fileSize: number,
-	checksum: string
-) => {
-	const command = new PutObjectCommand({
-		Bucket: env.BUCKET_NAME,
-		Key: fileName,
-		ContentType: fileType,
-		ContentLength: fileSize,
-		ChecksumSHA256: checksum,
-	});
-
-	return await getSignedUrl(s3, command, { expiresIn: 120 });
-};
-
-const uploadImageToBucket = async (image: File) => {
-	const url = await createPresignedUrlForUpload(
-		image.name,
-		image.type,
-		image.size,
-		await computeSHA256(image)
-	);
-
-	return await fetch(url, {
-		method: "PUT",
-		body: image,
-		headers: {
-			"Content-Type": image.type,
-		},
-	});
-};
-
-const deleteImageFromBucket = async (fileName: string) => {
-	const command = new DeleteObjectCommand({
-		Bucket: env.BUCKET_NAME,
-		Key: fileName,
-	});
-
-	await s3.send(command);
-};
 
 export const createArtist = async (formData: FormData) => {
 	const image = formData.get("image") as File;
@@ -59,7 +13,7 @@ export const createArtist = async (formData: FormData) => {
 		throw new Error("No image provided");
 	}
 
-	const response = await uploadImageToBucket(image);
+	const response = await uploadFileToBucket(image, env.ARTIST_BUCKET_NAME);
 
 	if (response.ok) {
 		try {
@@ -90,10 +44,13 @@ export const editArtist = async (formData: FormData) => {
 	}
 
 	// Delete the old image from bucket
-	await deleteImageFromBucket(oldImageSrc.split("/").pop()!);
+	await deleteFileFromBucket(
+		oldImageSrc.split("/").pop()!,
+		env.ARTIST_BUCKET_NAME
+	);
 
 	// Upload the new image
-	const response = await uploadImageToBucket(image);
+	const response = await uploadFileToBucket(image, env.ARTIST_BUCKET_NAME);
 
 	if (response.ok) {
 		try {
@@ -119,7 +76,10 @@ export const deleteArtist = async (formData: FormData) => {
 	const id = formData.get("id") as string;
 	const imageSrc = formData.get("image_src") as string;
 
-	await deleteImageFromBucket(imageSrc.split("/").pop()!);
+	await deleteFileFromBucket(
+		imageSrc.split("/").pop()!,
+		env.ARTIST_BUCKET_NAME
+	);
 	await db.deleteFrom("artists").where("id", "=", parseInt(id)).execute();
 
 	revalidatePath("/dashboard/artists");

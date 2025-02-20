@@ -13,7 +13,9 @@ export const env = createEnv({
 		R2_ACCESS_ID: z.string().min(1),
 		R2_ACCESS_SECRET: z.string().min(1),
 		R2_ACCOUNT_ID: z.string().min(1),
-		BUCKET_NAME: z.string().min(1),
+		ARTIST_BUCKET_NAME: z.string().min(1),
+		ALBUM_BUCKET_NAME: z.string().min(1),
+		SONG_BUCKET_NAME: z.string().min(1),
 	},
 	runtimeEnv: {
 		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
@@ -26,6 +28,8 @@ export const env = createEnv({
 		R2_ACCESS_ID: process.env.R2_ACCESS_ID,
 		R2_ACCESS_SECRET: process.env.R2_ACCESS_SECRET,
 		R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
-		BUCKET_NAME: process.env.BUCKET_NAME,
+		ARTIST_BUCKET_NAME: process.env.ARTIST_BUCKET_NAME,
+		ALBUM_BUCKET_NAME: process.env.ALBUM_BUCKET_NAME,
+		SONG_BUCKET_NAME: process.env.SONG_BUCKET_NAME,
 	},
 });
