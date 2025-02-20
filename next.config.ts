@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 	serverExternalPackages: ["@libsql/client", "@libsql/kysely-libsql"],
 	experimental: {
 		serverActions: {
-			bodySizeLimit: "3mb",
+			bodySizeLimit: "30mb",
 		},
 	},
 	images: {
