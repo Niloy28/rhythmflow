@@ -97,3 +97,14 @@ export const editAlbum = async (formData: FormData) => {
 		console.error("Failed to upload image");
 	}
 };
+
+export const deleteAlbum = async (formData: FormData) => {
+	const id = formData.get("id") as string;
+	const imageSrc = formData.get("image_src") as string;
+
+	await deleteFileFromBucket(imageSrc.split("/").pop()!, env.ALBUM_BUCKET_NAME);
+	await db.deleteFrom("albums").where("id", "=", parseInt(id)).execute();
+
+	revalidatePath("/dashboard/albums");
+	redirect("/dashboard/albums");
+};
