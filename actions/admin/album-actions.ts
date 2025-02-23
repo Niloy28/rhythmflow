@@ -96,6 +96,9 @@ export const editAlbum = async (formData: FormData) => {
 	} else {
 		console.error("Failed to upload image");
 	}
+
+	revalidatePath(`/dashboard/albums/${id}`);
+	redirect(`/dashboard/albums/${id}`);
 };
 
 export const deleteAlbum = async (formData: FormData) => {

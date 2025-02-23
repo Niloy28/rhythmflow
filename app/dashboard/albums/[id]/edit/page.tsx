@@ -19,13 +19,13 @@ const AlbumEditPage = async ({
 	const artists = await db.selectFrom("artists").selectAll().execute();
 
 	if (!album) {
-		redirect("/dashboard/artists");
+		redirect("/dashboard/albums");
 	}
 
 	return (
 		<div className="flex flex-col items-center justify-center">
-			<BackLink target="artists" />
-			<BackLink target={`artists/${album.id}`} name={album.name} />
+			<BackLink target="albums" />
+			<BackLink target={`albums/${album.id}`} name={album.name} />
 			<AlbumForm
 				title="Edit Album"
 				album={{
