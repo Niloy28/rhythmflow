@@ -50,6 +50,14 @@ export interface Session {
   userId: string;
 }
 
+export interface Songs {
+  album_id: number | null;
+  id: Generated<number | null>;
+  image_src: string;
+  name: string;
+  year: number;
+}
+
 export interface User {
   createdAt: string;
   email: string;
@@ -74,6 +82,7 @@ export interface DB {
   albums: Albums;
   artists: Artists;
   session: Session;
+  songs: Songs;
   user: User;
   verification: Verification;
 }
