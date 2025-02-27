@@ -36,7 +36,7 @@ export const createArtist = async (formData: FormData) => {
 			db.insertInto("artists")
 				.values({
 					name: name as string,
-					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
+					image_src: `${env.R2_PUBLIC_ARTIST_URL}/${image.name}`,
 				})
 				.executeTakeFirstOrThrow();
 		} catch (e) {
@@ -70,7 +70,7 @@ export const editArtist = async (formData: FormData) => {
 			db.updateTable("artists")
 				.set({
 					name,
-					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
+					image_src: `${env.R2_PUBLIC_ARTIST_URL}/${image.name}`,
 				})
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();

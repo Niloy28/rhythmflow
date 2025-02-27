@@ -49,7 +49,7 @@ export const createAlbum = async (formData: FormData) => {
 				.values({
 					name,
 					year,
-					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
+					image_src: `${env.R2_PUBLIC_ALBUM_URL}/${image.name}`,
 					artist_id,
 				})
 				.executeTakeFirstOrThrow();
@@ -86,7 +86,7 @@ export const editAlbum = async (formData: FormData) => {
 					name,
 					year,
 					artist_id,
-					image_src: `${env.R2_PUBLIC_URL}/${image.name}`,
+					image_src: `${env.R2_PUBLIC_ALBUM_URL}/${image.name}`,
 				})
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();
