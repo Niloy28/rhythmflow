@@ -33,7 +33,7 @@ const SongEditPage = async ({
 					name: song.name,
 					year: song.year,
 					album_id: song.album_id!,
-					image_src: song.image_src,
+					audio: song.audio,
 				}}
 				albums={albums.map((album) => ({
 					id: album.id!,

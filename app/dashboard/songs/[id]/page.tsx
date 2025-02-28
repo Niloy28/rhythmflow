@@ -51,13 +51,7 @@ const SongDetailsPage = async ({
 			</CardHeader>
 			<CardContent>
 				<div className="flex justify-left gap-8 items-center">
-					<Image
-						className="rounded-lg"
-						src={song.image_src}
-						alt={song.name}
-						width={600}
-						height={600}
-					/>
+					<audio controls src={song.audio} />
 					<div>
 						<div>
 							<p>Song Release Year: {song.year}</p>

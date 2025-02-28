@@ -52,8 +52,8 @@ export interface Session {
 
 export interface Songs {
   album_id: number | null;
+  audio: string;
   id: Generated<number | null>;
-  image_src: string;
   name: string;
   year: number;
 }

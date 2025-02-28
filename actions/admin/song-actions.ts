@@ -13,14 +13,14 @@ const validateFormData = (formData: FormData) => {
 		throw new Error("No name provided");
 	}
 
-	const image = formData.get("image") as File;
+	const song = formData.get("audio") as File;
 
-	if (!image) {
-		throw new Error("No image provided");
+	if (!song) {
+		throw new Error("No song provided");
 	}
 
-	if (image.size > env.IMAGE_MAX_SIZE) {
-		throw new Error("Image is too large");
+	if (song.size > env.SONG_MAX_SIZE) {
+		throw new Error("Song is too large");
 	}
 
 	const album_id = parseInt(formData.get("album_id") as string);
@@ -35,13 +35,13 @@ const validateFormData = (formData: FormData) => {
 		throw new Error("No year provided");
 	}
 
-	return { name, image, album_id, year };
+	return { name, song, album_id, year };
 };
 
 export const createSong = async (formData: FormData) => {
-	const { name, image, album_id, year } = validateFormData(formData);
+	const { name, song, album_id, year } = validateFormData(formData);
 
-	const response = await uploadFileToBucket(image, env.SONG_BUCKET_NAME);
+	const response = await uploadFileToBucket(song, env.SONG_BUCKET_NAME);
 
 	if (response.ok) {
 		try {
@@ -49,7 +49,7 @@ export const createSong = async (formData: FormData) => {
 				.values({
 					name,
 					year,
-					image_src: `${env.R2_PUBLIC_SONG_URL}/${image.name}`,
+					audio: `${env.R2_PUBLIC_SONG_URL}/${song.name}`,
 					album_id,
 				})
 				.executeTakeFirstOrThrow();
@@ -57,7 +57,7 @@ export const createSong = async (formData: FormData) => {
 			console.error(e);
 		}
 	} else {
-		console.error("Failed to upload image");
+		console.error("Failed to upload song");
 	}
 
 	revalidatePath("/dashboard/songs");
@@ -65,16 +65,16 @@ export const createSong = async (formData: FormData) => {
 };
 
 export const editSong = async (formData: FormData) => {
-	const { name, image, album_id, year } = validateFormData(formData);
+	const { name, song, album_id, year } = validateFormData(formData);
 
 	const id = parseInt(formData.get("id") as string);
-	const oldImage = formData.get("old_image") as string;
+	const oldSong = formData.get("old_audio") as string;
 
-	// Delete the old image from bucket
-	await deleteFileFromBucket(oldImage.split("/").pop()!, env.SONG_BUCKET_NAME);
+	// Delete the old song from bucket
+	await deleteFileFromBucket(oldSong.split("/").pop()!, env.SONG_BUCKET_NAME);
 
-	// Upload the new image
-	const response = await uploadFileToBucket(image, env.SONG_BUCKET_NAME);
+	// Upload the new song
+	const response = await uploadFileToBucket(song, env.SONG_BUCKET_NAME);
 
 	if (response.ok) {
 		try {
@@ -83,7 +83,7 @@ export const editSong = async (formData: FormData) => {
 					name,
 					year,
 					album_id,
-					image_src: `${env.R2_PUBLIC_SONG_URL}/${image.name}`,
+					audio: `${env.R2_PUBLIC_SONG_URL}/${song.name}`,
 				})
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();
@@ -91,7 +91,7 @@ export const editSong = async (formData: FormData) => {
 			console.error(e);
 		}
 	} else {
-		console.error("Failed to upload image");
+		console.error("Failed to upload song");
 	}
 
 	revalidatePath(`/dashboard/songs/${id}`);
@@ -100,9 +100,9 @@ export const editSong = async (formData: FormData) => {
 
 export const deleteSong = async (formData: FormData) => {
 	const id = formData.get("id") as string;
-	const imageSrc = formData.get("image_src") as string;
+	const audio = formData.get("audio") as string;
 
-	await deleteFileFromBucket(imageSrc.split("/").pop()!, env.SONG_BUCKET_NAME);
+	await deleteFileFromBucket(audio.split("/").pop()!, env.SONG_BUCKET_NAME);
 	await db.deleteFrom("songs").where("id", "=", parseInt(id)).execute();
 
 	revalidatePath("/dashboard/songs");

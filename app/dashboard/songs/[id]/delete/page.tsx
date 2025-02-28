@@ -48,7 +48,7 @@ const SongDeletePage = async ({
 					className="flex gap-2 justify-center items-center p-2 mt-4"
 				>
 					<Input name="id" value={song.id!} type="hidden" />
-					<Input name="image_src" value={song.image_src!} type="hidden" />
+					<Input name="audio" value={song.audio!} type="hidden" />
 					<DeleteButton />
 					<Link href={`dashboard/songs/${song.id}`}>
 						<Button>Cancel</Button>
