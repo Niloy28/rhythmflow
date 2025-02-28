@@ -49,6 +49,7 @@ const SongForm = ({
 					<Input name="id" value={song?.id || ""} type="hidden" />
 					<Input type="text" name="name" defaultValue={song ? song.name : ""} />
 
+					<Input type="hidden" value={song?.image_src} name="old_image" />
 					<Input
 						name="image"
 						type="file"

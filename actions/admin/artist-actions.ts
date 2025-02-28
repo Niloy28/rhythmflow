@@ -54,11 +54,11 @@ export const editArtist = async (formData: FormData) => {
 	const { name, image } = validateFormData(formData);
 
 	const id = parseInt(formData.get("id") as string);
-	const oldImageSrc = formData.get("old_image_src") as string;
+	const oldImage = formData.get("old_image") as string;
 
 	// Delete the old image from bucket
 	await deleteFileFromBucket(
-		oldImageSrc.split("/").pop()!,
+		oldImage.split("/").pop()!,
 		env.ARTIST_BUCKET_NAME
 	);
 

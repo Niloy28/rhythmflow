@@ -53,6 +53,7 @@ const AlbumForm = ({
 						defaultValue={album ? album.name : ""}
 					/>
 
+					<Input type="hidden" value={album?.image_src} name="old_image" />
 					<Input
 						name="image"
 						type="file"

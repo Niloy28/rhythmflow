@@ -44,6 +44,7 @@ const ArtistForm = ({
 					<Label className="text-red-500 text-3xl font-bold mt-2 border-4 border-red-500 border-spacing-2">
 						Image MUST BE UNDER 3MB
 					</Label>
+					<Input type="hidden" value={artist?.image_src} name="old_image" />
 					<Input
 						type="file"
 						name="image"
