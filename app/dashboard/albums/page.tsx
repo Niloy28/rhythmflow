@@ -1,5 +1,12 @@
+import BackLink from "@/components/dashboard/back-link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import db from "@/lib/db";
 import Link from "next/link";
 import React from "react";
@@ -32,6 +39,9 @@ const AlbumsPage = async () => {
 					</ul>
 				</div>
 			</CardContent>
+			<CardFooter>
+				<BackLink target="" name="dashboard" />
+			</CardFooter>
 		</Card>
 	);
 };
