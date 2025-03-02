@@ -4,6 +4,10 @@ import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/navigation/app-sidebar";
 import { Toaster } from "@/components/ui/toaster";
+import { cookies } from "next/headers";
+import AudioProvider from "@/provider/audio-provider";
+import AlbumArtProvider from "@/provider/album-art-provider";
+import AudioBar from "@/components/audio-bar";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -20,24 +24,34 @@ export const metadata: Metadata = {
 	description: "An app to listen to free music",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const currentlyListening = (await cookies()).get("currentlyListening")?.value;
+	const currentAlbumArt = (await cookies()).get("currentAlbumArt")?.value;
+
 	return (
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<SidebarProvider defaultOpen={false}>
-					<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-						<AppSidebar />
-						<SidebarTrigger />
-					</header>
-					<main className="w-full">{children}</main>
-					<Toaster />
-				</SidebarProvider>
+				<AlbumArtProvider currentAlbumArt={currentAlbumArt ?? ""}>
+					<AudioProvider currentAudio={currentlyListening ?? ""}>
+						<SidebarProvider defaultOpen={false}>
+							<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+								<AppSidebar />
+								<SidebarTrigger />
+							</header>
+							<main className="w-full">
+								<div>{children}</div>
+								<AudioBar />
+							</main>
+							<Toaster />
+						</SidebarProvider>
+					</AudioProvider>
+				</AlbumArtProvider>
 			</body>
 		</html>
 	);

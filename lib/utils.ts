@@ -20,3 +20,11 @@ export const computeSHA256 = async (file: File) => {
 
 	return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const shuffleArray = (array: any[]) => {
+	for (let i = array.length - 1; i >= 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+};
