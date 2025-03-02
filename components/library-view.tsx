@@ -8,7 +8,14 @@ const LibraryView = async () => {
 	let songs = await db
 		.selectFrom("songs")
 		.innerJoin("albums", "songs.album_id", "albums.id")
-		.select(["songs.name", "songs.audio", "albums.image_src as album_art"])
+		.innerJoin("artists", "albums.artist_id", "artists.id")
+		.select([
+			"songs.name",
+			"songs.audio",
+			"albums.image_src as album_art",
+			"artists.name as artist",
+			"songs.year",
+		])
 		.execute();
 	let albums = await db.selectFrom("albums").selectAll().execute();
 	let artists = await db.selectFrom("artists").selectAll().execute();
@@ -36,6 +43,8 @@ const LibraryView = async () => {
 					songs={songs.map((song) => ({
 						audio: song.audio,
 						title: song.name,
+						artist: song.artist,
+						year: song.year,
 						album_art: song.album_art,
 					}))}
 					setCookies={setCookies}
