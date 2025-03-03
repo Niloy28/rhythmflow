@@ -3,10 +3,10 @@
 import React from "react";
 import { useAudioContext } from "@/hooks/use-audio-context";
 import { useAlbumArtContext } from "@/hooks/use-album-art-context";
-import SongTile from "./song-tile";
+import SongTile from "../tiles/song-tile";
 import { setAudioBarCookies } from "@/lib/server-utils";
 
-type SongListProp = {
+type SongListProps = {
 	songs: {
 		title: string;
 		album_art: string;
@@ -16,7 +16,7 @@ type SongListProp = {
 	}[];
 };
 
-const SongList = ({ songs }: SongListProp) => {
+const SongList = ({ songs }: SongListProps) => {
 	const { setAudio } = useAudioContext();
 	const { setAlbumArt } = useAlbumArtContext();
 

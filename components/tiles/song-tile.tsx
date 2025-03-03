@@ -5,38 +5,38 @@ import {
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "./ui/tooltip";
-import Link from "next/link";
+} from "../ui/tooltip";
 
-const AlbumTile = ({
-	id,
+const SongTile = ({
 	title,
 	year,
 	artist,
 	image,
+	onClick,
 }: {
-	id: number;
 	title: string;
 	year: number;
 	artist: string;
 	image: string;
+	onClick: () => void;
 }) => {
 	return (
 		<TooltipProvider>
 			<div className="flex flex-col justify-center items-center">
 				<Tooltip>
 					<TooltipTrigger>
-						<Link href={`/album/${id}`}>
-							<div className="m-2 w-24 h-24 hover:cursor-pointer">
-								<Image
-									src={image}
-									alt={title}
-									width={96}
-									height={96}
-									className="rounded-lg w-full h-full"
-								/>
-							</div>
-						</Link>
+						<div
+							className="m-2 w-24 h-24 hover:cursor-pointer"
+							onClick={onClick}
+						>
+							<Image
+								src={image}
+								alt={title}
+								width={96}
+								height={96}
+								className="rounded-lg w-full h-full"
+							/>
+						</div>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col items-center justify-center">
 						<p>{title}</p>
@@ -50,4 +50,4 @@ const AlbumTile = ({
 	);
 };
 
-export default AlbumTile;
+export default SongTile;

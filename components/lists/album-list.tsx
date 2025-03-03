@@ -1,7 +1,7 @@
 import React from "react";
-import AlbumTile from "./album-tile";
+import AlbumTile from "../tiles/album-tile";
 
-type AlbumListProp = {
+type AlbumListProps = {
 	albums: {
 		id: number;
 		title: string;
@@ -11,7 +11,7 @@ type AlbumListProp = {
 	}[];
 };
 
-const AlbumList = ({ albums }: AlbumListProp) => {
+const AlbumList = ({ albums }: AlbumListProps) => {
 	return (
 		<div className="min-w-full">
 			<h2 className="text-2xl font-semibold">Albums</h2>

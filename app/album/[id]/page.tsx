@@ -65,7 +65,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 								key={index}
 								song={JSON.parse(JSON.stringify(song))}
 							/>
-							{index < songs.length - 1 && <Separator />}
+							{index < songs.length - 1 && <Separator key={song.name} />}
 						</>
 					))}
 				</div>

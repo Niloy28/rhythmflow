@@ -1,5 +1,5 @@
-import LibraryView from "@/components/library-view";
-import LikedSongView from "@/components/liked-song-view";
+import LibraryView from "@/components/views/library-view";
+import LikedSongView from "@/components/views/liked-song-view";
 
 export default function Home() {
 	return (

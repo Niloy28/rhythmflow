@@ -1,10 +1,10 @@
 import React from "react";
 import db from "@/lib/db";
 import { shuffleArray } from "@/lib/utils";
-import SongList from "./song-list";
-import AlbumList from "./album-list";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Separator } from "./ui/separator";
+import SongList from "../lists/song-list";
+import AlbumList from "../lists/album-list";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Separator } from "../ui/separator";
 
 const LibraryView = async () => {
 	let songs = await db
