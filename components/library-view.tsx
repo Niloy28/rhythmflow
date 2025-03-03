@@ -2,7 +2,9 @@ import React from "react";
 import db from "@/lib/db";
 import { shuffleArray } from "@/lib/utils";
 import SongList from "./song-list";
-import { cookies } from "next/headers";
+import AlbumList from "./album-list";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Separator } from "./ui/separator";
 
 const LibraryView = async () => {
 	let songs = await db
@@ -17,7 +19,17 @@ const LibraryView = async () => {
 			"songs.year",
 		])
 		.execute();
-	let albums = await db.selectFrom("albums").selectAll().execute();
+	let albums = await db
+		.selectFrom("albums")
+		.innerJoin("artists", "albums.artist_id", "artists.id")
+		.select([
+			"albums.id",
+			"albums.name",
+			"albums.year",
+			"albums.image_src",
+			"artists.name as artist",
+		])
+		.execute();
 	let artists = await db.selectFrom("artists").selectAll().execute();
 
 	shuffleArray(songs);
@@ -28,17 +40,12 @@ const LibraryView = async () => {
 	albums = albums.slice(0, 10);
 	artists = artists.slice(0, 10);
 
-	const setCookies = async (audio: string, albumArt: string) => {
-		"use server";
-
-		(await cookies()).set("currentlyListening", audio);
-		(await cookies()).set("currentAlbumArt", albumArt);
-	};
-
 	return (
-		<div className="w-full">
-			<h2 className="text-3xl font-bold">Library</h2>
-			<div className="flex gap-2 scroll-m-0 mt-2">
+		<Card className="w-full">
+			<CardHeader>
+				<CardTitle className="text-3xl font-bold">Library</CardTitle>
+			</CardHeader>
+			<CardContent className="flex flex-col gap-2 scroll-m-0 mt-2">
 				<SongList
 					songs={songs.map((song) => ({
 						audio: song.audio,
@@ -47,10 +54,19 @@ const LibraryView = async () => {
 						year: song.year,
 						album_art: song.album_art,
 					}))}
-					setCookies={setCookies}
 				/>
-			</div>
-		</div>
+				<Separator className="my-2" />
+				<AlbumList
+					albums={albums.map((album) => ({
+						id: album.id!,
+						title: album.name,
+						artist: album.artist,
+						year: album.year,
+						image: album.image_src,
+					}))}
+				/>
+			</CardContent>
+		</Card>
 	);
 };
 

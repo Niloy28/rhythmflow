@@ -2,6 +2,7 @@
 
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { cookies } from "next/headers";
 import s3 from "./s3";
 import { computeSHA256 } from "./utils";
 
@@ -51,4 +52,9 @@ export const deleteFileFromBucket = async (
 	});
 
 	await s3.send(command);
+};
+
+export const setAudioBarCookies = async (audio: string, albumArt: string) => {
+	(await cookies()).set("currentlyListening", audio);
+	(await cookies()).set("currentAlbumArt", albumArt);
 };

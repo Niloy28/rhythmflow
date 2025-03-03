@@ -45,7 +45,9 @@ export default async function RootLayout({
 								<SidebarTrigger />
 							</header>
 							<main className="w-full">
-								<div>{children}</div>
+								<div className="flex flex-col items-center justify-items-center p-8 pb-20 gap-4 sm:p-8 font-[family-name:var(--font-geist-sans)]">
+									{children}
+								</div>
 								<AudioBar />
 							</main>
 							<Toaster />

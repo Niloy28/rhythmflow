@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useAudioContext } from "@/hooks/use-audio-context";
 import { useAlbumArtContext } from "@/hooks/use-album-art-context";
 import SongTile from "./song-tile";
+import { setAudioBarCookies } from "@/lib/server-utils";
 
 type SongListProp = {
 	songs: {
@@ -14,10 +14,9 @@ type SongListProp = {
 		year: number;
 		audio: string;
 	}[];
-	setCookies: (audio: string, albumArt: string) => Promise<void>;
 };
 
-const SongList = ({ songs, setCookies }: SongListProp) => {
+const SongList = ({ songs }: SongListProp) => {
 	const { setAudio } = useAudioContext();
 	const { setAlbumArt } = useAlbumArtContext();
 
@@ -25,15 +24,13 @@ const SongList = ({ songs, setCookies }: SongListProp) => {
 		setAudio(audio);
 		setAlbumArt(albumArt);
 
-		await setCookies(audio, albumArt);
+		await setAudioBarCookies(audio, albumArt);
 	};
 
 	return (
-		<Card className="min-w-full">
-			<CardHeader>
-				<CardTitle className="text-2xl">Songs</CardTitle>
-			</CardHeader>
-			<CardContent className="flex gap-2">
+		<div className="min-w-full">
+			<h2 className="text-2xl font-semibold">Songs</h2>
+			<div className="flex gap-2">
 				{songs.map((song, index) => (
 					<SongTile
 						key={index}
@@ -44,8 +41,8 @@ const SongList = ({ songs, setCookies }: SongListProp) => {
 						onClick={() => onSongClick(song.audio, song.album_art)}
 					/>
 				))}
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 };
 

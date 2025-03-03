@@ -53,6 +53,7 @@ export interface Session {
 export interface Songs {
   album_id: number | null;
   audio: string;
+  duration: Generated<number>;
   id: Generated<number | null>;
   name: string;
   year: number;
