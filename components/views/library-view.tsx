@@ -5,6 +5,7 @@ import SongList from "../lists/song-list";
 import AlbumList from "../lists/album-list";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
+import ArtistList from "../lists/artist-list";
 
 const LibraryView = async () => {
 	let songs = await db
@@ -30,7 +31,10 @@ const LibraryView = async () => {
 			"artists.name as artist",
 		])
 		.execute();
-	let artists = await db.selectFrom("artists").selectAll().execute();
+	let artists = await db
+		.selectFrom("artists")
+		.select(["id", "name", "image_src as image"])
+		.execute();
 
 	shuffleArray(songs);
 	shuffleArray(albums);
@@ -65,6 +69,8 @@ const LibraryView = async () => {
 						image: album.image_src,
 					}))}
 				/>
+				<Separator className="my-2" />
+				<ArtistList artists={artists} />
 			</CardContent>
 		</Card>
 	);
