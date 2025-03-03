@@ -1,6 +1,12 @@
 import AlbumSongItem from "@/components/album-song-item";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import {
+	Table,
+	TableBody,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
 import db from "@/lib/db";
 import Image from "next/image";
 import React from "react";
@@ -15,6 +21,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 			"songs.name",
 			"songs.duration",
 			"songs.audio",
+			"songs.year",
 			"albums.image_src as album_art",
 		])
 		.execute();
@@ -55,20 +62,24 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 				</div>
 			</CardHeader>
 			<CardContent className="py-4">
-				<Separator />
-
-				<div className="flex flex-col">
-					{songs.map((song, index) => (
-						<>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Name</TableHead>
+							<TableHead>Release Year</TableHead>
+							<TableHead>Duration</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{songs.map((song, index) => (
 							<AlbumSongItem
 								className="hover:cursor-pointer"
 								key={index}
 								song={JSON.parse(JSON.stringify(song))}
 							/>
-							{index < songs.length - 1 && <Separator key={song.name} />}
-						</>
-					))}
-				</div>
+						))}
+					</TableBody>
+				</Table>
 			</CardContent>
 		</Card>
 	);

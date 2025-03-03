@@ -3,8 +3,9 @@
 import { useAlbumArtContext } from "@/hooks/use-album-art-context";
 import { useAudioContext } from "@/hooks/use-audio-context";
 import { setAudioBarCookies } from "@/lib/server-utils";
-import { cn, getFormattedDuration } from "@/lib/utils";
+import { getFormattedDuration } from "@/lib/utils";
 import React from "react";
+import { TableCell, TableRow } from "./ui/table";
 
 type AlbumSongItemProps = {
 	song: {
@@ -12,6 +13,7 @@ type AlbumSongItemProps = {
 		duration: number;
 		audio: string;
 		album_art: string;
+		year: number;
 	};
 	className?: string;
 };
@@ -28,13 +30,11 @@ const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
 	};
 
 	return (
-		<div
-			className={cn("flex items-center justify-between p-2 m-2", className)}
-			onClick={() => onSongItemClicked()}
-		>
-			<p>{song.name}</p>
-			<p>{getFormattedDuration(song.duration)}</p>
-		</div>
+		<TableRow className={className} onClick={() => onSongItemClicked()}>
+			<TableCell>{song.name}</TableCell>
+			<TableCell>{song.year}</TableCell>
+			<TableCell>{getFormattedDuration(song.duration)}</TableCell>
+		</TableRow>
 	);
 };
 
