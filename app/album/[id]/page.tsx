@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import db from "@/lib/db";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
@@ -33,7 +34,9 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 			"albums.name",
 			"albums.year",
 			"albums.image_src",
+			"albums.artist_id",
 			"artists.name as artist",
+			"artists.image_src as artist_image",
 		])
 		.executeTakeFirst();
 
@@ -44,20 +47,36 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 	return (
 		<Card className="w-full">
 			<CardHeader>
-				<div className="flex justify-between items-center mb-8">
-					<div className="flex items-center gap-4">
+				<div className="flex gap-4 items-center mb-8">
+					<div className="relative flex items-center gap-4">
 						<Image
 							src={album.image_src}
 							alt={album.name}
-							width={96}
-							height={96}
+							width={112}
+							height={112}
 							className="rounded-md"
 						/>
-						<b className="text-2xl">{album.name}</b>
 					</div>
 					<div className="flex flex-col gap-2 font-semibold">
-						<p>{album.year}</p>
-						<p>{album.artist}</p>
+						<b className="text-2xl">{album.name}</b>
+						<div className="font-normal text-gray-500 tracking-tighter leading-4">
+							<p>{album.year}</p>
+							<Link
+								href={`/artist/${album.artist_id}`}
+								className="hover:cursor-pointer"
+							>
+								<p className="flex justify-start items-center gap-2">
+									{album.artist}{" "}
+									<Image
+										src={album.artist_image}
+										alt={album.artist}
+										width={24}
+										height={24}
+										className="rounded-full"
+									/>
+								</p>
+							</Link>
+						</div>
 					</div>
 				</div>
 			</CardHeader>
