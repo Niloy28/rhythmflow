@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import {
@@ -20,6 +20,7 @@ type SongDataType = {
 	album_id: number;
 	name: string;
 	audio: string;
+	duration: number;
 };
 
 const SongForm = ({
@@ -33,6 +34,12 @@ const SongForm = ({
 	action: (formData: FormData) => Promise<void>;
 	albums: { id: number; name: string }[];
 }) => {
+	const [audioDuration, setAudioDuration] = useState<number>(
+		song?.duration ?? 0
+	);
+	const audioRef = useRef<HTMLAudioElement>(null);
+	const [audioURL, setAudioURL] = useState<string | undefined>(undefined);
+
 	return (
 		<Card className="flex flex-col m-6 p-2 w-2/3">
 			<CardHeader>
@@ -47,7 +54,31 @@ const SongForm = ({
 					<Input type="text" name="name" defaultValue={song ? song.name : ""} />
 
 					<Input type="hidden" value={song?.audio} name="old_audio" />
-					<Input name="audio" type="file" accept="audio/*" />
+					<Input
+						name="audio"
+						type="file"
+						accept="audio/*"
+						onChange={(e) => {
+							const file = e.target.files?.[0];
+
+							if (!file) {
+								return;
+							}
+
+							setAudioURL(URL.createObjectURL(file));
+						}}
+					/>
+
+					<audio
+						className="hidden"
+						ref={audioRef}
+						src={audioURL}
+						preload="metadata"
+						onLoadedMetadata={(_e) => {
+							setAudioDuration(audioRef.current?.duration ?? 0);
+						}}
+					/>
+					<Input type="hidden" value={audioDuration} name="duration" />
 
 					<Select
 						name="album_id"

@@ -23,6 +23,9 @@ const validateFormData = (formData: FormData) => {
 		throw new Error("Song is too large");
 	}
 
+	// Round duration to an integer
+	const duration = Math.round(parseFloat(formData.get("duration") as string));
+
 	const album_id = parseInt(formData.get("album_id") as string);
 
 	if (!album_id) {
@@ -35,11 +38,11 @@ const validateFormData = (formData: FormData) => {
 		throw new Error("No year provided");
 	}
 
-	return { name, song, album_id, year };
+	return { name, song, album_id, year, duration };
 };
 
 export const createSong = async (formData: FormData) => {
-	const { name, song, album_id, year } = validateFormData(formData);
+	const { name, song, album_id, year, duration } = validateFormData(formData);
 
 	const response = await uploadFileToBucket(song, env.SONG_BUCKET_NAME);
 
@@ -51,6 +54,7 @@ export const createSong = async (formData: FormData) => {
 					year,
 					audio: `${env.R2_PUBLIC_SONG_URL}/${song.name}`,
 					album_id,
+					duration,
 				})
 				.executeTakeFirstOrThrow();
 		} catch (e) {
@@ -65,7 +69,7 @@ export const createSong = async (formData: FormData) => {
 };
 
 export const editSong = async (formData: FormData) => {
-	const { name, song, album_id, year } = validateFormData(formData);
+	const { name, song, album_id, year, duration } = validateFormData(formData);
 
 	const id = parseInt(formData.get("id") as string);
 	const oldSong = formData.get("old_audio") as string;
@@ -84,6 +88,7 @@ export const editSong = async (formData: FormData) => {
 					year,
 					album_id,
 					audio: `${env.R2_PUBLIC_SONG_URL}/${song.name}`,
+					duration,
 				})
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();

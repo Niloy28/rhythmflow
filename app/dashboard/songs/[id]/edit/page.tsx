@@ -28,13 +28,7 @@ const SongEditPage = async ({
 			<BackLink target={`songs/${song.id}`} name={song.name} />
 			<SongForm
 				title="Edit Song"
-				song={{
-					id: song.id,
-					name: song.name,
-					year: song.year,
-					album_id: song.album_id!,
-					audio: song.audio,
-				}}
+				song={JSON.parse(JSON.stringify(song))}
 				albums={albums.map((album) => ({
 					id: album.id!,
 					name: album.name,
