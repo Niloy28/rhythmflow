@@ -11,7 +11,7 @@ const AudioBar = () => {
 	const { albumArt } = useAlbumArtContext();
 
 	return (
-		<div className="bg-slate-300 rounded-t-lg w-[90%] m-auto sticky top-full flex justify-between p-2">
+		<div className="bg-slate-300 h-16 rounded-t-lg w-[90%] m-auto fixed top-[calc(100%-4rem)] flex justify-between p-2">
 			{/* Album Display */}
 			{/* TODO: Add spinning animation while playing audio */}
 			<div className="flex items-center justify-center gap-4">
