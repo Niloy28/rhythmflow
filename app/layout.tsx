@@ -47,8 +47,8 @@ export default async function RootLayout({
 							<main className="w-full">
 								<div className="flex flex-col items-center justify-items-center p-8 pb-40 gap-4 sm:p-8 font-[family-name:var(--font-geist-sans)] overflow-y-auto">
 									{children}
+									<AudioBar />
 								</div>
-								<AudioBar />
 							</main>
 							<Toaster />
 						</SidebarProvider>
