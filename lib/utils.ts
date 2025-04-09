@@ -13,6 +13,10 @@ export const getAcronym = (name: string) => {
 	return first![0].toUpperCase() + last![0].toUpperCase();
 };
 
+export const capitalizeFirstLetter = (str: string) => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export const computeSHA256 = async (file: File) => {
 	const buffer = await file.arrayBuffer();
 	const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
