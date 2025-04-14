@@ -27,11 +27,13 @@ import { useCallback } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export function SignupForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
+	const router = useRouter();
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signUpSchema>>({
 		resolver: zodResolver(signUpSchema),
@@ -60,9 +62,11 @@ export function SignupForm({
 					description:
 						"There was a problem with the request. Please try again later.",
 				});
+			} else {
+				router.push("/");
 			}
 		},
-		[toast]
+		[toast, router]
 	);
 
 	return (
