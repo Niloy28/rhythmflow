@@ -25,7 +25,7 @@ export const NavigationItems: NavigationItem[] = [
 	},
 	{
 		title: "Liked",
-		url: "/liked-music",
+		url: "/liked",
 		icon: HeartIcon,
 	},
 	{

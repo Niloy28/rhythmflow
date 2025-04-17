@@ -9,6 +9,7 @@ import AudioProvider from "@/provider/audio-provider";
 import AlbumArtProvider from "@/provider/album-art-provider";
 import AudioBar from "@/components/audio-bar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import IsSongLikedProvider from "@/provider/is-song-liked-provider";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default async function RootLayout({
 }>) {
 	const currentlyListening = (await cookies()).get("currentlyListening")?.value;
 	const currentAlbumArt = (await cookies()).get("currentAlbumArt")?.value;
+	const isCurrentlyLiked = (await cookies()).get("isCurrentlyLiked")?.value;
 
 	return (
 		<html lang="en" suppressHydrationWarning>
@@ -44,23 +46,25 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<AlbumArtProvider currentAlbumArt={currentAlbumArt ?? ""}>
-						<AudioProvider currentAudio={currentlyListening ?? ""}>
-							<SidebarProvider defaultOpen={false} className="pb-16">
-								<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-									<AppSidebar />
-									<SidebarTrigger />
-								</header>
-								<main className="w-full">
-									<div className="flex flex-col items-center justify-items-center p-8 pb-40 gap-4 sm:p-8 font-[family-name:var(--font-geist-sans)] overflow-y-auto">
-										{children}
-										<AudioBar />
-									</div>
-								</main>
-								<Toaster />
-							</SidebarProvider>
-						</AudioProvider>
-					</AlbumArtProvider>
+					<IsSongLikedProvider isCurrentlyLiked={isCurrentlyLiked === "true"}>
+						<AlbumArtProvider currentAlbumArt={currentAlbumArt ?? ""}>
+							<AudioProvider currentAudio={currentlyListening ?? ""}>
+								<SidebarProvider defaultOpen={false} className="pb-16">
+									<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+										<AppSidebar />
+										<SidebarTrigger />
+									</header>
+									<main className="w-full">
+										<div className="flex flex-col items-center justify-items-center p-8 pb-40 gap-4 sm:p-8 font-[family-name:var(--font-geist-sans)] overflow-y-auto">
+											{children}
+											<AudioBar />
+										</div>
+									</main>
+									<Toaster />
+								</SidebarProvider>
+							</AudioProvider>
+						</AlbumArtProvider>
+					</IsSongLikedProvider>
 				</ThemeProvider>
 			</body>
 		</html>

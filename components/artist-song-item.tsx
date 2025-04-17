@@ -7,15 +7,19 @@ import React from "react";
 import { TableCell, TableRow } from "./ui/table";
 import { getFormattedDuration } from "@/lib/utils";
 import Image from "next/image";
+import { useSongLikedContext } from "@/hooks/use-song-liked-context";
+import LikeSongButton from "./like-song-button";
 
 type ArtistSongItemProps = {
 	song: {
+		id: number | null;
 		name: string;
 		duration: number;
 		audio: string;
 		album: string;
 		album_art: string;
 		year: number;
+		liked: boolean;
 	};
 	className?: string;
 };
@@ -23,12 +27,14 @@ type ArtistSongItemProps = {
 const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 	const { setAudio } = useAudioContext();
 	const { setAlbumArt } = useAlbumArtContext();
+	const { setIsLiked } = useSongLikedContext();
 
 	const onSongItemClicked = async () => {
 		setAudio(song.audio);
 		setAlbumArt(song.album_art);
+		setIsLiked(song.liked);
 
-		await setAudioBarCookies(song.audio, song.album_art);
+		await setAudioBarCookies(song.audio, song.album_art, song.liked);
 	};
 
 	return (
@@ -47,6 +53,9 @@ const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 					/>
 					<div className="font-semibold text-lg text-center">{song.album}</div>
 				</div>
+			</TableCell>
+			<TableCell>
+				<LikeSongButton songID={song.id} isLikedInitially={song.liked} />
 			</TableCell>
 		</TableRow>
 	);

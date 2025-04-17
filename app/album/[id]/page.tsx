@@ -7,7 +7,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { auth } from "@/lib/auth";
 import db from "@/lib/db";
+import { fetchLikedSongIDs } from "@/lib/server-utils";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -19,6 +22,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 		.where("songs.album_id", "=", id)
 		.innerJoin("albums", "songs.album_id", "albums.id")
 		.select([
+			"songs.id",
 			"songs.name",
 			"songs.duration",
 			"songs.audio",
@@ -39,6 +43,11 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 			"artists.image_src as artist_image",
 		])
 		.executeTakeFirst();
+
+	const userID =
+		(await auth.api.getSession({ headers: await headers() }))?.session.userId ??
+		"";
+	const likedSongIDs = await fetchLikedSongIDs(userID);
 
 	if (!album) {
 		throw new Error("Album not found");
@@ -87,6 +96,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 							<TableHead>Name</TableHead>
 							<TableHead>Release Year</TableHead>
 							<TableHead>Duration</TableHead>
+							<TableHead>Liked</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -94,7 +104,10 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 							<AlbumSongItem
 								className="hover:cursor-pointer"
 								key={index}
-								song={JSON.parse(JSON.stringify(song))}
+								song={{
+									...song,
+									liked: likedSongIDs.includes(song.id!),
+								}}
 							/>
 						))}
 					</TableBody>

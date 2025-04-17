@@ -11,6 +11,7 @@ import {
 import { useAudioContext } from "@/hooks/use-audio-context";
 import { useAlbumArtContext } from "@/hooks/use-album-art-context";
 import { setAudioBarCookies } from "@/lib/server-utils";
+import { useSongLikedContext } from "@/hooks/use-song-liked-context";
 
 const SongTile = ({
 	title,
@@ -18,21 +19,25 @@ const SongTile = ({
 	artist,
 	audio,
 	image,
+	liked,
 }: {
 	title: string;
 	year: number;
 	artist: string;
 	audio: string;
 	image: string;
+	liked: boolean;
 }) => {
 	const { setAudio } = useAudioContext();
 	const { setAlbumArt } = useAlbumArtContext();
+	const { setIsLiked } = useSongLikedContext();
 
 	const onSongClick = async () => {
 		setAudio(audio);
 		setAlbumArt(image);
+		setIsLiked(liked);
 
-		await setAudioBarCookies(audio, image);
+		await setAudioBarCookies(audio, image, liked);
 	};
 
 	return (

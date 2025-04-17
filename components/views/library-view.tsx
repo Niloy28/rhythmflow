@@ -6,6 +6,9 @@ import AlbumList from "../lists/album-list";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import ArtistList from "../lists/artist-list";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { fetchLikedSongIDs } from "@/lib/server-utils";
 
 const LibraryView = async () => {
 	let songs = await db
@@ -13,6 +16,7 @@ const LibraryView = async () => {
 		.innerJoin("albums", "songs.album_id", "albums.id")
 		.innerJoin("artists", "albums.artist_id", "artists.id")
 		.select([
+			"songs.id",
 			"songs.name",
 			"songs.audio",
 			"albums.image_src as album_art",
@@ -36,6 +40,10 @@ const LibraryView = async () => {
 		.select(["id", "name", "image_src as image"])
 		.execute();
 
+	const userID =
+		(await auth.api.getSession({ headers: await headers() }))?.user.id ?? "";
+	const likedSongIDs = await fetchLikedSongIDs(userID);
+
 	shuffleArray(songs);
 	shuffleArray(albums);
 	shuffleArray(artists);
@@ -57,6 +65,7 @@ const LibraryView = async () => {
 						artist: song.artist,
 						year: song.year,
 						album_art: song.album_art,
+						liked: likedSongIDs.includes(song.id!),
 					}))}
 				/>
 				<Separator className="my-2" />

@@ -39,6 +39,12 @@ export interface Artists {
   name: string;
 }
 
+export interface LikedSongs {
+  id: Generated<number | null>;
+  song_id: number;
+  user_id: string;
+}
+
 export interface Session {
   createdAt: string;
   expiresAt: string;
@@ -82,6 +88,7 @@ export interface DB {
   account: Account;
   albums: Albums;
   artists: Artists;
+  liked_songs: LikedSongs;
   session: Session;
   songs: Songs;
   user: User;

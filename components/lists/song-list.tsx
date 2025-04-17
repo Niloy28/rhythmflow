@@ -8,6 +8,7 @@ type SongListProps = {
 		artist: string;
 		year: number;
 		audio: string;
+		liked: boolean;
 	}[];
 };
 
@@ -24,6 +25,7 @@ const SongList = ({ songs }: SongListProps) => {
 						audio={song.audio}
 						year={song.year}
 						image={song.album_art}
+						liked={song.liked}
 					/>
 				))}
 			</div>

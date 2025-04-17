@@ -3,6 +3,7 @@
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { cookies } from "next/headers";
+import db from "./db";
 import s3 from "./s3";
 import { computeSHA256 } from "./utils";
 
@@ -54,7 +55,22 @@ export const deleteFileFromBucket = async (
 	await s3.send(command);
 };
 
-export const setAudioBarCookies = async (audio: string, albumArt: string) => {
+export const fetchLikedSongIDs = async (userID: string) => {
+	return (
+		await db
+			.selectFrom("liked_songs")
+			.where("user_id", "=", userID)
+			.select("song_id")
+			.execute()
+	).map((song) => song.song_id);
+};
+
+export const setAudioBarCookies = async (
+	audio: string,
+	albumArt: string,
+	isLiked: boolean
+) => {
 	(await cookies()).set("currentlyListening", audio);
 	(await cookies()).set("currentAlbumArt", albumArt);
+	(await cookies()).set("isCurrentlyLiked", isLiked ? "true" : "false");
 };

@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 import ArtistSongItem from "@/components/artist-song-item";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { fetchLikedSongIDs } from "@/lib/server-utils";
 
 const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 	const id = (await params).id;
@@ -18,6 +21,7 @@ const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 		.innerJoin("songs", "albums.id", "songs.album_id")
 		.where("albums.artist_id", "=", id)
 		.select([
+			"songs.id",
 			"songs.name",
 			"songs.duration",
 			"songs.audio",
@@ -31,6 +35,11 @@ const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 		.where("id", "=", id)
 		.selectAll()
 		.executeTakeFirstOrThrow();
+
+	const userID =
+		(await auth.api.getSession({ headers: await headers() }))?.session.userId ??
+		"";
+	const likedSongIDs = await fetchLikedSongIDs(userID);
 
 	return (
 		<Card className="w-full">
@@ -56,6 +65,7 @@ const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 							<TableHead>Release Year</TableHead>
 							<TableHead>Duration</TableHead>
 							<TableHead className="text-center">Album</TableHead>
+							<TableHead>Liked</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -63,7 +73,10 @@ const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 							<ArtistSongItem
 								className="hover:cursor-pointer"
 								key={index}
-								song={JSON.parse(JSON.stringify(song))}
+								song={{
+									...song,
+									liked: likedSongIDs.includes(song.id!),
+								}}
 							/>
 						))}
 					</TableBody>
