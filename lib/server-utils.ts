@@ -66,11 +66,21 @@ export const fetchLikedSongIDs = async (userID: string) => {
 };
 
 export const setAudioBarCookies = async (
-	audio: string,
+	id: number,
+	name: string,
+	artist: string,
+	album: string,
+	year: number,
 	albumArt: string,
+	audio: string,
 	isLiked: boolean
 ) => {
-	(await cookies()).set("currentlyListening", audio);
+	(await cookies()).set("currentSongID", id.toString());
+	(await cookies()).set("currentSongName", name);
+	(await cookies()).set("currentArtist", artist);
+	(await cookies()).set("currentAlbum", album);
+	(await cookies()).set("currentYear", year.toString());
 	(await cookies()).set("currentAlbumArt", albumArt);
+	(await cookies()).set("currentAudioSrc", audio);
 	(await cookies()).set("isCurrentlyLiked", isLiked ? "true" : "false");
 };

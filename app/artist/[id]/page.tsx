@@ -27,7 +27,7 @@ const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 			"songs.audio",
 			"songs.year",
 			"albums.name as album",
-			"albums.image_src as album_art",
+			"albums.image_src as albumArt",
 		])
 		.execute();
 	const artist = await db
@@ -75,6 +75,7 @@ const ArtistPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 								key={index}
 								song={{
 									...song,
+									artist: artist.name,
 									liked: likedSongIDs.includes(song.id!),
 								}}
 							/>

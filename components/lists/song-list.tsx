@@ -3,10 +3,12 @@ import SongTile from "../tiles/song-tile";
 
 type SongListProps = {
 	songs: {
-		title: string;
-		album_art: string;
+		id: number | null;
+		name: string;
 		artist: string;
+		album: string;
 		year: number;
+		albumArt: string;
 		audio: string;
 		liked: boolean;
 	}[];
@@ -18,15 +20,7 @@ const SongList = ({ songs }: SongListProps) => {
 			<h2 className="text-2xl font-semibold">Songs</h2>
 			<div className="flex gap-2">
 				{songs.map((song, index) => (
-					<SongTile
-						key={index}
-						title={song.title}
-						artist={song.artist}
-						audio={song.audio}
-						year={song.year}
-						image={song.album_art}
-						liked={song.liked}
-					/>
+					<SongTile key={index} song={song} />
 				))}
 			</div>
 		</div>

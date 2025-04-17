@@ -21,13 +21,14 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 		.selectFrom("songs")
 		.where("songs.album_id", "=", id)
 		.innerJoin("albums", "songs.album_id", "albums.id")
+		.innerJoin("artists", "albums.artist_id", "artists.id")
 		.select([
 			"songs.id",
 			"songs.name",
 			"songs.duration",
 			"songs.audio",
 			"songs.year",
-			"albums.image_src as album_art",
+			"artists.name as artist",
 		])
 		.execute();
 	const album = await db
@@ -40,7 +41,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 			"albums.image_src",
 			"albums.artist_id",
 			"artists.name as artist",
-			"artists.image_src as artist_image",
+			"artists.image_src as artistImage",
 		])
 		.executeTakeFirst();
 
@@ -77,7 +78,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 								<p className="flex justify-start items-center gap-2">
 									{album.artist}{" "}
 									<Image
-										src={album.artist_image}
+										src={album.artistImage}
 										alt={album.artist}
 										width={24}
 										height={24}
@@ -106,6 +107,8 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 								key={index}
 								song={{
 									...song,
+									album: album.name,
+									albumArt: album.image_src,
 									liked: likedSongIDs.includes(song.id!),
 								}}
 							/>

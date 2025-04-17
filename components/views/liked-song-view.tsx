@@ -32,26 +32,20 @@ const LikedSongView = async () => {
 			.innerJoin("albums", "songs.album_id", "albums.id")
 			.innerJoin("artists", "albums.artist_id", "artists.id")
 			.select([
+				"songs.id",
 				"songs.name",
 				"songs.year",
 				"songs.audio",
-				"albums.image_src as image_src",
 				"artists.name as artist",
+				"albums.name as album",
+				"albums.image_src as albumArt",
 			])
 			.execute();
 
 		innerNode = (
 			<>
 				{likedSongs.map((song, index) => (
-					<SongTile
-						key={index}
-						title={song.name}
-						year={song.year}
-						image={song.image_src}
-						artist={song.artist}
-						audio={song.audio}
-						liked
-					/>
+					<SongTile key={index} song={{ ...song, liked: true }} />
 				))}
 				{likedSongs.length === 0 && (
 					<>

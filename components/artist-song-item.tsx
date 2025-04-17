@@ -1,14 +1,12 @@
 "use client";
 
-import { useAlbumArtContext } from "@/hooks/use-album-art-context";
-import { useAudioContext } from "@/hooks/use-audio-context";
 import { setAudioBarCookies } from "@/lib/server-utils";
 import React from "react";
 import { TableCell, TableRow } from "./ui/table";
 import { getFormattedDuration } from "@/lib/utils";
 import Image from "next/image";
-import { useSongLikedContext } from "@/hooks/use-song-liked-context";
 import LikeSongButton from "./like-song-button";
+import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
 
 type ArtistSongItemProps = {
 	song: {
@@ -17,7 +15,8 @@ type ArtistSongItemProps = {
 		duration: number;
 		audio: string;
 		album: string;
-		album_art: string;
+		artist: string;
+		albumArt: string;
 		year: number;
 		liked: boolean;
 	};
@@ -25,16 +24,59 @@ type ArtistSongItemProps = {
 };
 
 const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
-	const { setAudio } = useAudioContext();
-	const { setAlbumArt } = useAlbumArtContext();
-	const { setIsLiked } = useSongLikedContext();
+	const audioBarDispatch = useAudioBarDispatchContext();
 
 	const onSongItemClicked = async () => {
-		setAudio(song.audio);
-		setAlbumArt(song.album_art);
-		setIsLiked(song.liked);
+		audioBarDispatch({
+			type: "SET_SONG_ID",
+			payload: song.id!.toString(),
+		});
 
-		await setAudioBarCookies(song.audio, song.album_art, song.liked);
+		audioBarDispatch({
+			type: "SET_SONG_NAME",
+			payload: song.name,
+		});
+
+		audioBarDispatch({
+			type: "SET_ARTIST",
+			payload: song.artist,
+		});
+
+		audioBarDispatch({
+			type: "SET_ALBUM",
+			payload: song.album,
+		});
+
+		audioBarDispatch({
+			type: "SET_YEAR",
+			payload: song.year.toString(),
+		});
+
+		audioBarDispatch({
+			type: "SET_ALBUM_ART",
+			payload: song.albumArt,
+		});
+
+		audioBarDispatch({
+			type: "SET_AUDIO_SRC",
+			payload: song.audio,
+		});
+
+		audioBarDispatch({
+			type: "SET_IS_LIKED",
+			payload: song.liked,
+		});
+
+		await setAudioBarCookies(
+			song.id!,
+			song.name,
+			song.artist,
+			song.album,
+			song.year,
+			song.albumArt,
+			song.audio,
+			song.liked
+		);
 	};
 
 	return (
@@ -45,7 +87,7 @@ const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 			<TableCell>
 				<div className="flex flex-col items-center gap-2">
 					<Image
-						src={song.album_art}
+						src={song.albumArt}
 						alt={song.name}
 						width={128}
 						height={128}

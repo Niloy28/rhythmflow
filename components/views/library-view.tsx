@@ -18,10 +18,11 @@ const LibraryView = async () => {
 		.select([
 			"songs.id",
 			"songs.name",
-			"songs.audio",
-			"albums.image_src as album_art",
-			"artists.name as artist",
 			"songs.year",
+			"songs.audio",
+			"artists.name as artist",
+			"albums.name as album",
+			"albums.image_src as albumArt",
 		])
 		.execute();
 	let albums = await db
@@ -60,11 +61,13 @@ const LibraryView = async () => {
 			<CardContent className="flex flex-col gap-2 scroll-m-0 mt-2">
 				<SongList
 					songs={songs.map((song) => ({
-						audio: song.audio,
-						title: song.name,
+						id: song.id,
+						name: song.name,
 						artist: song.artist,
+						album: song.album,
 						year: song.year,
-						album_art: song.album_art,
+						albumArt: song.albumArt,
+						audio: song.audio,
 						liked: likedSongIDs.includes(song.id!),
 					}))}
 				/>

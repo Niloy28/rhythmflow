@@ -8,36 +8,71 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "../ui/tooltip";
-import { useAudioContext } from "@/hooks/use-audio-context";
-import { useAlbumArtContext } from "@/hooks/use-album-art-context";
 import { setAudioBarCookies } from "@/lib/server-utils";
-import { useSongLikedContext } from "@/hooks/use-song-liked-context";
+import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
 
-const SongTile = ({
-	title,
-	year,
-	artist,
-	audio,
-	image,
-	liked,
-}: {
-	title: string;
-	year: number;
-	artist: string;
-	audio: string;
-	image: string;
-	liked: boolean;
-}) => {
-	const { setAudio } = useAudioContext();
-	const { setAlbumArt } = useAlbumArtContext();
-	const { setIsLiked } = useSongLikedContext();
+type SongTileProp = {
+	song: {
+		id: number | null;
+		name: string;
+		audio: string;
+		artist: string;
+		album: string;
+		albumArt: string;
+		year: number;
+		liked: boolean;
+	};
+};
 
-	const onSongClick = async () => {
-		setAudio(audio);
-		setAlbumArt(image);
-		setIsLiked(liked);
+const SongTile = ({ song }: SongTileProp) => {
+	const audioBarDispatch = useAudioBarDispatchContext();
 
-		await setAudioBarCookies(audio, image, liked);
+	const onSongClicked = async () => {
+		audioBarDispatch({
+			type: "SET_SONG_ID",
+			payload: song.id!.toString(),
+		});
+
+		audioBarDispatch({
+			type: "SET_SONG_NAME",
+			payload: song.name,
+		});
+
+		audioBarDispatch({
+			type: "SET_ARTIST",
+			payload: song.artist,
+		});
+
+		audioBarDispatch({
+			type: "SET_ALBUM",
+			payload: song.album,
+		});
+
+		audioBarDispatch({
+			type: "SET_ALBUM_ART",
+			payload: song.albumArt,
+		});
+
+		audioBarDispatch({
+			type: "SET_AUDIO_SRC",
+			payload: song.audio,
+		});
+
+		audioBarDispatch({
+			type: "SET_IS_LIKED",
+			payload: song.liked,
+		});
+
+		await setAudioBarCookies(
+			song.id!,
+			song.name,
+			song.artist,
+			song.album,
+			song.year,
+			song.albumArt,
+			song.audio,
+			song.liked
+		);
 	};
 
 	return (
@@ -47,11 +82,11 @@ const SongTile = ({
 					<TooltipTrigger>
 						<div
 							className="m-2 w-24 h-24 hover:cursor-pointer"
-							onClick={onSongClick}
+							onClick={onSongClicked}
 						>
 							<Image
-								src={image}
-								alt={title}
+								src={song.albumArt}
+								alt={song.name}
 								width={96}
 								height={96}
 								className="rounded-lg w-full h-full"
@@ -59,12 +94,12 @@ const SongTile = ({
 						</div>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col items-center justify-center">
-						<p>{title}</p>
-						<p>{artist}</p>
-						<p>{year}</p>
+						<p>{song.name}</p>
+						<p>{song.artist}</p>
+						<p>{song.year}</p>
 					</TooltipContent>
 				</Tooltip>
-				<p className="text-sm font-semibold">{title}</p>
+				<p className="text-sm font-semibold">{song.name}</p>
 			</div>
 		</TooltipProvider>
 	);
