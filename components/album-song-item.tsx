@@ -2,10 +2,11 @@
 
 import { setAudioBarCookies } from "@/lib/server-utils";
 import { getFormattedDuration } from "@/lib/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TableCell, TableRow } from "./ui/table";
 import LikeSongButton from "./like-song-button";
 import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
+import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
 
 type AlbumSongItemProps = {
 	song: {
@@ -23,7 +24,15 @@ type AlbumSongItemProps = {
 };
 
 const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
+	const [isLiked, setIsLiked] = useState(song.liked);
+	const audioBar = useAudioBarContext();
 	const audioBarDispatch = useAudioBarDispatchContext();
+
+	useEffect(() => {
+		if (audioBar.songID === song.id?.toString()) {
+			setIsLiked(audioBar.isLiked);
+		}
+	}, [audioBar, song.id]);
 
 	const onSongItemClicked = async () => {
 		audioBarDispatch({
@@ -74,7 +83,7 @@ const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
 			song.year,
 			song.albumArt,
 			song.audio,
-			song.liked
+			isLiked
 		);
 	};
 
@@ -84,7 +93,7 @@ const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
 			<TableCell>{song.year}</TableCell>
 			<TableCell>{getFormattedDuration(song.duration)}</TableCell>
 			<TableCell>
-				<LikeSongButton songID={song.id} isLikedInitially={song.liked} />
+				<LikeSongButton songID={song.id} isLikedInitially={isLiked} />
 			</TableCell>
 		</TableRow>
 	);

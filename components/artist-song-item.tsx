@@ -1,12 +1,13 @@
 "use client";
 
 import { setAudioBarCookies } from "@/lib/server-utils";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { TableCell, TableRow } from "./ui/table";
 import { getFormattedDuration } from "@/lib/utils";
 import Image from "next/image";
 import LikeSongButton from "./like-song-button";
 import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
+import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
 
 type ArtistSongItemProps = {
 	song: {
@@ -24,7 +25,15 @@ type ArtistSongItemProps = {
 };
 
 const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
+	const [isLiked, setIsLiked] = useState(song.liked);
+	const audioBar = useAudioBarContext();
 	const audioBarDispatch = useAudioBarDispatchContext();
+
+	useEffect(() => {
+		if (audioBar.songID === song.id?.toString()) {
+			setIsLiked(audioBar.isLiked);
+		}
+	}, [audioBar, song.id]);
 
 	const onSongItemClicked = async () => {
 		audioBarDispatch({
@@ -64,7 +73,7 @@ const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 
 		audioBarDispatch({
 			type: "SET_IS_LIKED",
-			payload: song.liked,
+			payload: isLiked,
 		});
 
 		await setAudioBarCookies(
@@ -75,7 +84,7 @@ const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 			song.year,
 			song.albumArt,
 			song.audio,
-			song.liked
+			isLiked
 		);
 	};
 
@@ -97,7 +106,11 @@ const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 				</div>
 			</TableCell>
 			<TableCell>
-				<LikeSongButton songID={song.id} isLikedInitially={song.liked} />
+				<LikeSongButton
+					songID={song.id}
+					isLikedInitially={isLiked}
+					updateParentUILikeState={(liked) => setIsLiked(liked)}
+				/>
 			</TableCell>
 		</TableRow>
 	);

@@ -82,5 +82,9 @@ export const setAudioBarCookies = async (
 	(await cookies()).set("currentYear", year.toString());
 	(await cookies()).set("currentAlbumArt", albumArt);
 	(await cookies()).set("currentAudioSrc", audio);
+	await setLikedSongCookie(isLiked);
+};
+
+export const setLikedSongCookie = async (isLiked: boolean) => {
 	(await cookies()).set("isCurrentlyLiked", isLiked ? "true" : "false");
 };
