@@ -1,27 +1,76 @@
 "use client";
 
 import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
-import { Disc2Icon } from "lucide-react";
+import { Disc2Icon, Pause, Play } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import LikeSongButton from "./like-song-button";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "./ui/button";
+import ProgressBar from "./progress-bar";
+import VolumeSlider from "./volume-slider";
 
 const AudioBar = () => {
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [currentTime, setCurrentTime] = useState(0);
+	const [duration, setDuration] = useState(0);
+	const audioRef = useRef<HTMLAudioElement>(null);
 	const audioBar = useAudioBarContext();
 	const user = authClient.useSession();
 
+	useEffect(() => {
+		const audio = audioRef.current;
+		if (!audio) return;
+
+		const updateTime = () => setCurrentTime(audio.currentTime);
+		const updateDuration = () => setDuration(audio.duration);
+
+		const handleEnded = () => {
+			setIsPlaying(false);
+			setCurrentTime(0);
+		};
+
+		audio.addEventListener("timeupdate", updateTime);
+		audio.addEventListener("loadedmetadata", updateDuration);
+		audio.addEventListener("ended", handleEnded);
+
+		return () => {
+			audio.removeEventListener("timeupdate", updateTime);
+			audio.removeEventListener("loadedmetadata", updateDuration);
+			audio.removeEventListener("ended", handleEnded);
+		};
+	}, []);
+
+	useEffect(() => {
+		setIsPlaying(!audioRef.current?.paused);
+	}, [audioRef.current?.paused]);
+
+	const togglePlayPause = async () => {
+		const audio = audioRef.current;
+		if (!audio) return;
+
+		try {
+			if (isPlaying) {
+				audio.pause();
+				setIsPlaying(false);
+			} else {
+				await audio.play();
+				setIsPlaying(true);
+			}
+		} catch (error) {
+			console.error("Audio playback error:", error);
+		}
+	};
+
 	return (
-		<div className="bg-slate-300 dark:bg-slate-800 h-16 rounded-t-lg w-[93%] m-auto fixed top-[calc(100%-4rem)] flex justify-between p-2">
+		<div className="bg-slate-300 dark:bg-slate-800 h-16 rounded-t-lg w-[93%] fixed top-[calc(100%-4rem)] flex gap-2 p-2">
 			{/* Album Display */}
-			{/* TODO: Add spinning animation while playing audio */}
 			<div className="flex items-center justify-center gap-4">
 				{audioBar.albumArt.length > 0 && (
 					<Image
 						src={audioBar.albumArt}
 						alt=""
-						className="rounded-full"
+						className={`rounded-full animate-${isPlaying ? "spin" : "none"}`}
 						width={32}
 						height={32}
 					/>
@@ -30,38 +79,61 @@ const AudioBar = () => {
 					<Disc2Icon size={32} className="text-foreground" />
 				)}
 				<div className="flex flex-col text-xs">
-					<p>{audioBar.songName}</p>
-					<p>{audioBar.artist}</p>
-					<p>{audioBar.album}</p>
-					<p>{audioBar.year}</p>
+					<p className="font-bold text-xl">{audioBar.songName}</p>
+					<p className="opacity-60">{audioBar.artist}</p>
 				</div>
+				{user.data && audioBar.songID && (
+					<div className="flex justify-center items-center">
+						{audioBar.isLiked && (
+							<LikeSongButton
+								songID={parseInt(audioBar.songID)}
+								isLikedInitially
+							/>
+						)}
+						{!audioBar.isLiked && (
+							<LikeSongButton
+								songID={parseInt(audioBar.songID)}
+								isLikedInitially={false}
+							/>
+						)}
+					</div>
+				)}
+				{!user.data && !audioBar.songID && (
+					<Button disabled variant="outline">
+						Log in first
+					</Button>
+				)}
 			</div>
-			<audio
-				autoPlay={audioBar.audioSrc.length > 0}
-				controls
-				src={audioBar.audioSrc.length > 0 ? audioBar.audioSrc : undefined}
+
+			{/* Controls */}
+			<div className="flex flex-grow gap-4 items-center px-4">
+				<button
+					onClick={togglePlayPause}
+					className="w-10 h-10 rounded-full bg-gradient-to-br from-foreground to-muted-foreground shadow-2xl flex items-center justify-center hover:from-muted-foreground hover:to-accent-foreground transform hover:scale-105 transition-all duration-200 active:scale-95"
+				>
+					{isPlaying ? (
+						<Pause className="w-6 h-6 text-gray-800 ml-0" fill="currentColor" />
+					) : (
+						<Play className="w-6 h-6 text-gray-800 ml-1" fill="currentColor" />
+					)}
+				</button>
+
+				<ProgressBar currentTime={currentTime} duration={duration} />
+			</div>
+
+			<VolumeSlider
+				changeVolume={(volume) => {
+					audioRef!.current!.volume = volume / 100.0;
+				}}
 			/>
-			{user.data && audioBar.songID && (
-				<div className="flex justify-center items-center">
-					{audioBar.isLiked && (
-						<LikeSongButton
-							songID={parseInt(audioBar.songID)}
-							isLikedInitially
-						/>
-					)}
-					{!audioBar.isLiked && (
-						<LikeSongButton
-							songID={parseInt(audioBar.songID)}
-							isLikedInitially={false}
-						/>
-					)}
-				</div>
-			)}
-			{!user.data && !audioBar.songID && (
-				<Button disabled variant="outline">
-					Log in first
-				</Button>
-			)}
+
+			{/* Hidden audio element */}
+			<audio
+				ref={audioRef}
+				autoPlay
+				src={audioBar.audioSrc}
+				preload="metadata"
+			/>
 		</div>
 	);
 };
