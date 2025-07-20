@@ -61,7 +61,7 @@ const LikedSongView = async () => {
 			<CardHeader>
 				<CardTitle className="text-3xl font-bold">Liked Songs</CardTitle>
 			</CardHeader>
-			<CardContent>{innerNode}</CardContent>
+			<CardContent className="flex">{innerNode}</CardContent>
 		</Card>
 	);
 };
