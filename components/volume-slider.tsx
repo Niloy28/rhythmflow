@@ -42,7 +42,7 @@ const VolumeSlider = ({
 			<VolumeIcon
 				size={32}
 				onClick={toggleMute}
-				className="opacity-60 transition delay-150 duration-300 hover:opacity-100 hover:scale-105 cursor-pointer"
+				className="opacity-60 transition duration-100 ease-linear hover:opacity-100 hover:scale-105 cursor-pointer"
 			/>
 			<Input
 				type="range"
