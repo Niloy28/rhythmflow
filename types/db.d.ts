@@ -57,7 +57,7 @@ export interface Session {
 }
 
 export interface Songs {
-  album_id: number | null;
+  album_id: number;
   audio: string;
   duration: Generated<number>;
   id: Generated<number | null>;
@@ -84,6 +84,12 @@ export interface Verification {
   value: string;
 }
 
+export interface WatchLater {
+  id: Generated<number | null>;
+  song_id: number;
+  user_id: string;
+}
+
 export interface DB {
   account: Account;
   albums: Albums;
@@ -93,4 +99,5 @@ export interface DB {
   songs: Songs;
   user: User;
   verification: Verification;
+  watch_later: WatchLater;
 }
