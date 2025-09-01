@@ -2,12 +2,28 @@ import SongTile from "@/components/tiles/song-tile";
 import { auth } from "@/lib/auth";
 import db from "@/lib/db";
 import { headers } from "next/headers";
+import Link from "next/link";
 import React from "react";
 
 const LikedSongsPage = async () => {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
+
+	if (!session || session?.user === null) {
+		return (
+			<div className="text-center mt-20 text-2xl">
+				<Link
+					href="/signin"
+					className="text-blue-400 underline underline-offset-1"
+				>
+					Sign in
+				</Link>{" "}
+				to view your liked songs.
+			</div>
+		);
+	}
+
 	const songs = await db
 		.selectFrom("liked_songs")
 		.where("user_id", "==", session!.session.userId!)
