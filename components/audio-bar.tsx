@@ -132,7 +132,7 @@ const AudioBar = () => {
 				ref={audioRef}
 				autoPlay
 				// @ts-expect-error Allow null to be passed as src in case of audioSrc being empty string
-				src={audioBar.audioSrc !== "" ? null : audioBar.audioSrc}
+				src={audioBar.audioSrc === "" ? null : audioBar.audioSrc}
 				preload="metadata"
 			/>
 		</div>
