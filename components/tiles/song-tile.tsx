@@ -10,6 +10,10 @@ import {
 } from "../ui/tooltip";
 import { setAudioBarCookies } from "@/lib/server-utils";
 import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
+import LikeSongButton from "../like-song-button";
+import { Button } from "../ui/button";
+import { Trash } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 type SongTileProp = {
 	song: {
@@ -75,22 +79,40 @@ const SongTile = ({ song }: SongTileProp) => {
 		);
 	};
 
+	const { data } = authClient.useSession();
+
 	return (
 		<TooltipProvider>
-			<div className="flex flex-col justify-center items-center">
+			<div className="flex flex-col relative justify-center group items-center">
 				<Tooltip>
+					{/* Only show playlist buttons while logged in */}
+					{data && data.user && (
+						<div className="absolute top-4 right-4">
+							<div className="flex flex-col gap-2 justify-end opacity-0 transition-opacity duration-300 ease-in delay-0 group-hover:opacity-100">
+								<LikeSongButton
+									className="size-8"
+									isLikedInitially={song.liked}
+									songID={0}
+								/>
+								<Button className="size-8">
+									<Trash />{" "}
+								</Button>
+							</div>
+						</div>
+					)}
 					<TooltipTrigger>
 						<div
-							className="m-2 w-24 h-24 hover:cursor-pointer"
+							className="m-2 w-36 h-42 flex flex-col justify-center rounded-lg hover:cursor-pointer border border-black dark:border-white"
 							onClick={onSongClicked}
 						>
 							<Image
 								src={song.albumArt}
 								alt={song.name}
-								width={96}
-								height={96}
+								width={192}
+								height={192}
 								className="rounded-lg w-full h-full"
 							/>
+							<p className="text-sm font-semibold">{song.name}</p>
 						</div>
 					</TooltipTrigger>
 					<TooltipContent className="flex flex-col items-center justify-center">
@@ -99,7 +121,6 @@ const SongTile = ({ song }: SongTileProp) => {
 						<p>{song.year}</p>
 					</TooltipContent>
 				</Tooltip>
-				<p className="text-sm font-semibold">{song.name}</p>
 			</div>
 		</TooltipProvider>
 	);

@@ -59,12 +59,12 @@ export default async function RootLayout({
 						currentAudioSrc={currentlyAudioSrc}
 						isCurrentlyLiked={isCurrentlyLiked === "true"}
 					>
-						<SidebarProvider defaultOpen={false} className="pb-16">
+						<SidebarProvider defaultOpen={false}>
 							<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
 								<AppSidebar />
 								<SidebarTrigger />
 							</header>
-							<main className="w-full">
+							<main className="w-full pb-16">
 								<div className="flex flex-col items-center justify-items-center p-8 pb-40 gap-4 sm:p-8 font-[family-name:var(--font-geist-sans)] overflow-y-auto">
 									{children}
 									<AudioBar />

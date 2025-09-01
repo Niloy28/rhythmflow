@@ -13,10 +13,12 @@ const LikeSongButton = ({
 	songID,
 	isLikedInitially,
 	updateParentUILikeState,
+	className,
 }: {
 	songID: number | null;
 	isLikedInitially: boolean;
 	updateParentUILikeState?: (isLiked: boolean) => void;
+	className?: string;
 }) => {
 	const [isLiked, setIsLiked] = useState(isLikedInitially);
 	const audioBar = useAudioBarContext();
@@ -77,6 +79,7 @@ const LikeSongButton = ({
 			}}
 			variant="outline"
 			disabled={Number.isNaN(songID)}
+			className={className}
 		>
 			{pending && <Loader2 />}
 			{!pending && isLiked && likedIcon}

@@ -16,9 +16,9 @@ type SongListProps = {
 
 const SongList = ({ songs }: SongListProps) => {
 	return (
-		<div className="min-w-full">
+		<div className="w-full">
 			<h2 className="text-2xl font-semibold">Songs</h2>
-			<div className="flex gap-2">
+			<div className="flex max-w-full gap-2 overflow-x-scroll">
 				{songs.map((song, index) => (
 					<SongTile key={index} song={song} />
 				))}
