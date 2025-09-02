@@ -26,3 +26,26 @@ export const removeSongLike = async (formData: FormData) => {
 		.where("song_id", "=", parseInt(songID))
 		.execute();
 };
+
+export const addToWatchLater = async (formData: FormData) => {
+	const songID = formData.get("song_id") as string;
+	const userID = (await auth.api.getSession({ headers: await headers() }))!.user
+		.id!;
+
+	await db
+		.insertInto("watch_later")
+		.values({
+			song_id: parseInt(songID),
+			user_id: userID,
+		})
+		.execute();
+};
+
+export const removeFromWatchLater = async (formData: FormData) => {
+	const songID = formData.get("song_id") as string;
+
+	await db
+		.deleteFrom("watch_later")
+		.where("song_id", "=", parseInt(songID))
+		.execute();
+};
