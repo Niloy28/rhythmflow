@@ -92,7 +92,7 @@ const SongTile = ({ song }: SongTileProp) => {
 								<LikeSongButton
 									className="size-8"
 									isLikedInitially={song.liked}
-									songID={0}
+									songID={song.id}
 								/>
 								<Button className="size-8">
 									<Trash />{" "}
