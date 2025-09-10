@@ -32,6 +32,7 @@ const LikeSongButton = ({
 		setIsLiked(isLikedInitially);
 	}, [isLikedInitially]);
 
+	// When the like button is clicked from the list, update the audio bar state if the song matches
 	useEffect(() => {
 		if (audioBar.songID === songID?.toString()) {
 			audioBarDispatch({
@@ -41,8 +42,8 @@ const LikeSongButton = ({
 		}
 	}, [isLiked, audioBar.songID, audioBarDispatch, songID]);
 
+	// set cookie if clicked from audio bar
 	useEffect(() => {
-		// set cookie if clicked from audio bar
 		async function updateLikedCookie() {
 			if (audioBar.songID === songID?.toString()) {
 				await setLikedSongCookie(isLiked);

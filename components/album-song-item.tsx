@@ -93,7 +93,11 @@ const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
 			<TableCell>{song.year}</TableCell>
 			<TableCell>{getFormattedDuration(song.duration)}</TableCell>
 			<TableCell>
-				<LikeSongButton songID={song.id} isLikedInitially={isLiked} />
+				<LikeSongButton
+					songID={song.id}
+					isLikedInitially={isLiked}
+					updateParentUILikeState={(liked) => setIsLiked(liked)}
+				/>
 			</TableCell>
 		</TableRow>
 	);
