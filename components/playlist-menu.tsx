@@ -8,14 +8,17 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Ellipsis, ListMusicIcon, PlusIcon } from "lucide-react";
+import { Ellipsis, PlusIcon } from "lucide-react";
+import WatchLaterButton from "./watch-later-button";
 
 const PlaylistMenu = ({
+	songID,
 	className,
 	onPlaylistMenuOpen,
 }: {
-	className?: string;
+	songID: number;
 	onPlaylistMenuOpen: (open: boolean) => void;
+	className?: string;
 }) => {
 	// TODO: Fetch user playlists and populate the menu dynamically
 	return (
@@ -30,8 +33,8 @@ const PlaylistMenu = ({
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuLabel>Playlists</DropdownMenuLabel>
-				<DropdownMenuItem className="hover:cursor-pointer flex gap-1 justify-between">
-					Watch Later <ListMusicIcon />
+				<DropdownMenuItem>
+					<WatchLaterButton songID={songID} />
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem className="hover:cursor-pointer flex gap-1 justify-between">

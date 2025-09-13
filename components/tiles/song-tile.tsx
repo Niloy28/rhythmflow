@@ -103,6 +103,7 @@ const SongTile = ({ song }: SongTileProp) => {
 									songID={song.id}
 								/>
 								<PlaylistMenu
+									songID={song.id!}
 									className="size-8"
 									onPlaylistMenuOpen={setIsPlaylistMenuOpen}
 								/>
