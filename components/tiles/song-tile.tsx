@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import {
 	Tooltip,
 	TooltipContent,
@@ -11,9 +11,9 @@ import {
 import { setAudioBarCookies } from "@/lib/server-utils";
 import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
 import LikeSongButton from "../like-song-button";
-import { Button } from "../ui/button";
-import { Trash } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import PlaylistMenu from "../playlist-menu";
+import { cn } from "@/lib/utils";
 
 type SongTileProp = {
 	song: {
@@ -30,6 +30,7 @@ type SongTileProp = {
 
 const SongTile = ({ song }: SongTileProp) => {
 	const audioBarDispatch = useAudioBarDispatchContext();
+	const [isPlaylistMenuOpen, setIsPlaylistMenuOpen] = useState(false);
 
 	const onSongClicked = async () => {
 		audioBarDispatch({
@@ -88,15 +89,23 @@ const SongTile = ({ song }: SongTileProp) => {
 					{/* Only show playlist buttons while logged in */}
 					{data && data.user && (
 						<div className="absolute top-4 right-4">
-							<div className="flex flex-col gap-2 justify-end opacity-0 transition-opacity duration-300 ease-in delay-0 group-hover:opacity-100">
+							<div
+								className={cn(
+									"flex flex-col gap-2 justify-end",
+									!isPlaylistMenuOpen
+										? "opacity-0 transition-opacity duration-300 ease-in delay-0 group-hover:opacity-100"
+										: "opacity-100"
+								)}
+							>
 								<LikeSongButton
 									className="size-8"
 									isLikedInitially={song.liked}
 									songID={song.id}
 								/>
-								<Button className="size-8">
-									<Trash />{" "}
-								</Button>
+								<PlaylistMenu
+									className="size-8"
+									onPlaylistMenuOpen={setIsPlaylistMenuOpen}
+								/>
 							</div>
 						</div>
 					)}
