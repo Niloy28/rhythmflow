@@ -5,6 +5,26 @@ import db from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
 
+/**
+ * Song editing page for dashboard administration
+ *
+ * @param params - Route parameters containing the song ID to edit
+ * @returns JSX element with pre-filled song editing form
+ *
+ * @remarks
+ * This page enables comprehensive editing of existing song records:
+ * - Pre-populates form with current song data including metadata
+ * - Loads all available albums for album reassignment dropdown
+ * - Uses shared SongForm component configured for editing mode
+ * - Connects to editSong server action for processing updates
+ *
+ * **Form Functionality**: The editing interface handles:
+ * - Song name and release year updates
+ * - Album reassignment with dropdown selection
+ * - Audio file replacement (with automatic cleanup of old file)
+ * - Duration updates (typically auto-calculated from new audio file)
+ * - Form validation and error handling
+ */
 const SongEditPage = async ({
 	params,
 }: {

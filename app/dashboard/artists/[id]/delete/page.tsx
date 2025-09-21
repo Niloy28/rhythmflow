@@ -15,6 +15,24 @@ import db from "@/lib/db";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+/**
+ * Artist deletion confirmation page for dashboard administration
+ *
+ * @param params - Route parameters containing the artist ID to delete
+ * @returns JSX element with artist deletion confirmation form
+ *
+ * @remarks
+ * This page provides a destructive action confirmation interface for artist removal:
+ * - Displays the artist name prominently for user verification
+ * - Shows clear warning about the irreversible nature of deletion
+ * - Includes hidden form fields with necessary data for the delete operation
+ * - Provides cancel button to abort and return to artist details
+ *
+ * **Critical Operations**: The deletion process handles:
+ * - Removing the artist record from the database
+ * - Deleting associated profile image from R2 storage
+ * - Cascading effects on related albums and songs (depending on database constraints)
+ */
 const ArtistDeletePage = async ({
 	params,
 }: {
@@ -47,10 +65,11 @@ const ArtistDeletePage = async ({
 					action={deleteArtist}
 					className="flex gap-2 justify-center items-center p-2 mt-4"
 				>
+					{/* Hidden inputs for server action data */}
 					<Input name="id" value={artist.id!} type="hidden" />
 					<Input name="image_src" value={artist.image_src!} type="hidden" />
 					<DeleteButton />
-					<Link href={`dashboard/artist/${artist.id}`}>
+					<Link href={`dashboard/artists/${artist.id}`}>
 						<Button>Cancel</Button>
 					</Link>
 				</form>

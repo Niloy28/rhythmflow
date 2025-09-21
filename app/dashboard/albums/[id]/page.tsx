@@ -14,6 +14,27 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
+/**
+ * Album details view page for dashboard administration
+ *
+ * @param params - Route parameters containing the album ID to display
+ * @returns JSX element showing album details with management actions
+ *
+ * @remarks
+ * This page provides a detailed view of a specific album for administrators:
+ * - Displays full-size album artwork
+ * - Shows album metadata (name, year)
+ * - Includes linked artist information with navigation to artist details
+ * - Provides edit and delete action buttons
+ *
+ * Features include:
+ * - Large album artwork display for quality review
+ * - Clickable artist link with external link icon
+ * - Action buttons for editing and deleting the album
+ * - Breadcrumb navigation back to albums list
+ *
+ * If the album doesn't exist, automatically redirects to albums dashboard.
+ */
 const AlbumDetailsPage = async ({
 	params,
 }: {
@@ -30,6 +51,7 @@ const AlbumDetailsPage = async ({
 		redirect("/dashboard/albums");
 	}
 
+	// Get associated artist information
 	const artist = await db
 		.selectFrom("artists")
 		.select("name")

@@ -5,11 +5,24 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * User's liked songs collection page
+ *
+ * @returns JSX element displaying all user-liked songs or sign-in prompt
+ *
+ * @remarks
+ * This page shows a personalized collection of songs the user has liked:
+ * - Requires user authentication to access
+ * - Displays sign-in prompt for anonymous users
+ * - Shows all liked songs with complete metadata (artist, album, artwork)
+ * - All songs are marked as liked since they're from the liked collection
+ */
 const LikedSongsPage = async () => {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
 
+	// Handle unauthenticated users
 	if (!session || session?.user === null) {
 		return (
 			<div className="text-center mt-20 text-2xl">
@@ -24,6 +37,7 @@ const LikedSongsPage = async () => {
 		);
 	}
 
+	// Fetch all liked songs with complete metadata
 	const songs = await db
 		.selectFrom("liked_songs")
 		.where("user_id", "==", session!.session.userId!)

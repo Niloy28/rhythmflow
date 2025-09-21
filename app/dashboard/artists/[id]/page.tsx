@@ -13,6 +13,19 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
+/**
+ * Artist details view page for dashboard administration
+ *
+ * @param params - Route parameters containing the artist ID to display
+ * @returns JSX element showing artist profile with management actions
+ *
+ * @remarks
+ * This page provides a comprehensive view of an artist's profile for administrators:
+ * - Displays the artist's name prominently as the page title
+ * - Shows full-size profile image for quality review and identification
+ * - Provides direct access to edit and delete operations via action buttons
+ * - Includes breadcrumb navigation back to the artists listing page
+ */
 const ArtistDetailsPage = async ({
 	params,
 }: {

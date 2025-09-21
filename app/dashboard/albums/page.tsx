@@ -11,6 +11,26 @@ import db from "@/lib/db";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Albums management dashboard page
+ *
+ * @returns JSX element displaying all albums with management options
+ *
+ * @remarks
+ * This page serves as the main albums administration interface:
+ * - Lists all albums in the database as clickable links
+ * - Provides a "Create New" button for adding albums
+ * - Each album link navigates to the detailed album view
+ * - Includes breadcrumb navigation back to main dashboard
+ *
+ * The page layout uses:
+ * - Simple bullet-pointed list for easy scanning
+ * - Blue colored links for clear visual hierarchy
+ * - Card-based layout consistent with other dashboard pages
+ *
+ * This serves as the entry point for all album management operations
+ * including viewing, editing, creating, and deleting albums.
+ */
 const AlbumsPage = async () => {
 	const albums = await db.selectFrom("albums").selectAll().execute();
 

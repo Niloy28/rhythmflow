@@ -8,6 +8,18 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 
+/**
+ * User settings and preferences page
+ *
+ * @returns JSX element with user customization options
+ *
+ * @remarks
+ * This page provides user preference controls for personalizing
+ * the application experience. Currently includes:
+ *
+ * **Theme Toggle**: Allows users to switch between light, dark,
+ * and system-based themes for optimal viewing preferences.
+ */
 const SettingsPage = () => {
 	return (
 		<Card className="w-full">

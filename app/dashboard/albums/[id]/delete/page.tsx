@@ -15,6 +15,26 @@ import db from "@/lib/db";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+/**
+ * Album deletion confirmation page for dashboard administration
+ *
+ * @param params - Route parameters containing the album ID to delete
+ * @returns JSX element with deletion confirmation form
+ *
+ * @remarks
+ * This page provides a destructive action confirmation interface:
+ * - Displays the album name for confirmation
+ * - Shows clear warning about irreversible action
+ * - Includes hidden form fields with necessary data for deletion
+ * - Provides cancel button to abort the operation
+ *
+ * The form submits to the deleteAlbum server action which handles:
+ * - Removing the album record from database
+ * - Deleting associated files from R2 storage
+ * - Redirecting back to albums list
+ *
+ * If the album doesn't exist, redirects to albums dashboard immediately.
+ */
 const AlbumDeletePage = async ({
 	params,
 }: {
@@ -47,6 +67,7 @@ const AlbumDeletePage = async ({
 					action={deleteAlbum}
 					className="flex gap-2 justify-center items-center p-2 mt-4"
 				>
+					{/* Hidden inputs for server action */}
 					<Input name="id" value={album.id!} type="hidden" />
 					<Input name="image_src" value={album.image_src!} type="hidden" />
 					<DeleteButton />

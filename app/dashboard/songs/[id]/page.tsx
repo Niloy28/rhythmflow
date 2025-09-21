@@ -14,6 +14,20 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
+/**
+ * Song details view page for dashboard administration
+ *
+ * @param params - Route parameters containing the song ID to display
+ * @returns JSX element showing comprehensive song information with management actions
+ *
+ * @remarks
+ * This page provides the most detailed view of a song for administrative purposes:
+ * - Displays song name as the primary heading
+ * - Includes functional audio player for immediate playback testing
+ * - Shows complete song metadata including release years
+ * - Provides linked navigation to related album and artist pages
+ * - Displays artist profile image for visual context
+ */
 const SongDetailsPage = async ({
 	params,
 }: {
@@ -30,12 +44,14 @@ const SongDetailsPage = async ({
 		redirect("/dashboard/songs");
 	}
 
+	// Fetch related album information
 	const album = await db
 		.selectFrom("albums")
 		.selectAll()
 		.where("id", "=", song.album_id)
 		.executeTakeFirstOrThrow();
 
+	// Fetch artist information through album relationship
 	const artist = await db
 		.selectFrom("artists")
 		.select("id")
@@ -51,6 +67,7 @@ const SongDetailsPage = async ({
 			</CardHeader>
 			<CardContent>
 				<div className="flex justify-left gap-8 items-center">
+					{/* Audio player for immediate testing */}
 					<audio controls src={song.audio} />
 					<div>
 						<div>
