@@ -10,6 +10,19 @@ import { Button } from "./ui/button";
 import ProgressBar from "./progress-bar";
 import VolumeSlider from "./volume-slider";
 
+/**
+ * Persistent audio player component that appears at the bottom of the screen
+ *
+ * @returns JSX element representing the global audio player interface
+ *
+ * @remarks
+ * This component provides the main audio playback interface for the application:
+ * - Fixed positioning at the bottom of the screen
+ * - Displays currently playing song metadata and artwork
+ * - Provides play/pause controls and volume adjustment
+ * - Shows playback progress with interactive progress bar
+ * - Includes like functionality for authenticated users
+ */
 const AudioBar = () => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
@@ -18,6 +31,7 @@ const AudioBar = () => {
 	const audioBar = useAudioBarContext();
 	const user = authClient.useSession();
 
+	// Set up audio event listeners for progress tracking
 	useEffect(() => {
 		const audio = audioRef.current;
 		if (!audio) return;
@@ -41,10 +55,14 @@ const AudioBar = () => {
 		};
 	}, []);
 
+	// Sync playing state with audio element
 	useEffect(() => {
 		setIsPlaying(!audioRef.current?.paused);
 	}, [audioRef.current?.paused]);
 
+	/**
+	 * Toggles between play and pause states
+	 */
 	const togglePlayPause = async () => {
 		const audio = audioRef.current;
 		if (!audio) return;

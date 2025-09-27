@@ -9,30 +9,59 @@ import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-conte
 import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
 import { setLikedSongCookie } from "@/lib/server-utils";
 
+/**
+ * Props for the LikeSongButton component
+ */
+interface LikeSongButtonProps {
+	/** ID of the song to like/unlike */
+	songID: number | null;
+	/** Initial like status for the button */
+	isLikedInitially: boolean;
+	/** Optional callback to update parent component's like state */
+	updateParentUILikeState?: (isLiked: boolean) => void;
+	/** Optional CSS class name for styling */
+	className?: string;
+}
+
+/**
+ * Interactive button component for liking/unliking songs
+ *
+ * @param props - Component props including song ID and state management
+ * @returns JSX element with heart icon that toggles like status
+ *
+ * @remarks
+ * This component provides comprehensive like functionality across the application:
+ * - Visual heart icon that fills/unfills based on like status
+ * - Integrates with server actions for persistent like storage
+ * - Synchronizes with global audio player state
+ * - Updates browser cookies for state persistence
+ *
+ * **Visual States**:
+ * - Liked: Filled red heart icon
+ * - Not liked: Outlined heart icon
+ * - Loading: Spinner animation during server operations
+ */
 const LikeSongButton = ({
 	songID,
 	isLikedInitially,
 	updateParentUILikeState,
 	className,
-}: {
-	songID: number | null;
-	isLikedInitially: boolean;
-	updateParentUILikeState?: (isLiked: boolean) => void;
-	className?: string;
-}) => {
+}: LikeSongButtonProps) => {
 	const [isLiked, setIsLiked] = useState(isLikedInitially);
 	const audioBar = useAudioBarContext();
 	const audioBarDispatch = useAudioBarDispatchContext();
 	const { pending } = useFormStatus();
 
+	// Icon definitions for different states
 	const likedIcon = <Heart fill="red" color="red" />;
 	const notLikedIcon = <Heart />;
 
+	// Sync with initial prop changes
 	useEffect(() => {
 		setIsLiked(isLikedInitially);
 	}, [isLikedInitially]);
 
-	// When the like button is clicked from the list, update the audio bar state if the song matches
+	// Update global audio player state when like status changes
 	useEffect(() => {
 		if (audioBar.songID === songID?.toString()) {
 			audioBarDispatch({
@@ -42,7 +71,7 @@ const LikeSongButton = ({
 		}
 	}, [isLiked, audioBar.songID, audioBarDispatch, songID]);
 
-	// set cookie if clicked from audio bar
+	// Update cookie when like status changes for current audio player song
 	useEffect(() => {
 		async function updateLikedCookie() {
 			if (audioBar.songID === songID?.toString()) {

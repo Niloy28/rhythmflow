@@ -23,15 +23,30 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 
+/**
+ * Props for the PlaylistMenu component.
+ */
+interface PlaylistMenuProps {
+	/** ID of the song to add to playlists */
+	songID: number;
+	/** Callback fired when the playlist menu opens/closes */
+	onPlaylistMenuOpen: (open: boolean) => void;
+	/** Additional CSS classes to apply to the trigger button */
+	className?: string;
+}
+
+/**
+ * Dropdown menu component for managing playlists and creating new ones.
+ * Provides options to add songs to existing playlists or create new playlists.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the playlist menu
+ */
 const PlaylistMenu = ({
 	songID,
 	className,
 	onPlaylistMenuOpen,
-}: {
-	songID: number;
-	onPlaylistMenuOpen: (open: boolean) => void;
-	className?: string;
-}) => {
+}: PlaylistMenuProps) => {
 	// TODO: Fetch user playlists and populate the menu dynamically
 	return (
 		// Wrap in Dialog for "Create New Playlist" functionality

@@ -4,6 +4,9 @@ import { AudioBarContext } from "@/context/audio-bar-context";
 import { AudioBarDispatchContext } from "@/context/audio-bar-dispatch-context";
 import { useReducer } from "react";
 
+/**
+ * Action types for the audio bar reducer.
+ */
 export type ACTION_TYPE =
 	| { type: "SET_SONG_ID"; payload: string }
 	| { type: "SET_SONG_NAME"; payload: string }
@@ -14,6 +17,38 @@ export type ACTION_TYPE =
 	| { type: "SET_AUDIO_SRC"; payload: string }
 	| { type: "SET_IS_LIKED"; payload: boolean };
 
+/**
+ * Props for the AudioBarProvider component.
+ */
+interface AudioBarProviderProps {
+	/** Child components to render */
+	children: React.ReactNode;
+	/** Initial song ID for the audio bar state */
+	currentSongID?: string;
+	/** Initial song name for the audio bar state */
+	currentSongName?: string;
+	/** Initial artist name for the audio bar state */
+	currentArtist?: string;
+	/** Initial album name for the audio bar state */
+	currentAlbum?: string;
+	/** Initial year for the audio bar state */
+	currentYear?: string;
+	/** Initial album art URL for the audio bar state */
+	currentAlbumArt?: string;
+	/** Initial audio source URL for the audio bar state */
+	currentAudioSrc?: string;
+	/** Initial liked state for the audio bar */
+	isCurrentlyLiked?: boolean;
+}
+
+/**
+ * Context provider for managing audio bar state using React reducer.
+ * Provides both state and dispatch contexts to child components.
+ * Handles all audio player data including song metadata and playback state.
+ *
+ * @param props - Component props containing initial state values
+ * @returns JSX element providing audio bar contexts to children
+ */
 const AudioBarProvider = ({
 	children,
 	currentSongID,
@@ -24,17 +59,7 @@ const AudioBarProvider = ({
 	currentAlbumArt,
 	currentAudioSrc,
 	isCurrentlyLiked,
-}: {
-	children: React.ReactNode;
-	currentSongID?: string;
-	currentSongName?: string;
-	currentArtist?: string;
-	currentAlbum?: string;
-	currentYear?: string;
-	currentAlbumArt?: string;
-	currentAudioSrc?: string;
-	isCurrentlyLiked?: boolean;
-}) => {
+}: AudioBarProviderProps) => {
 	const initialStates = {
 		songID: currentSongID ?? "",
 		songName: currentSongName ?? "",
@@ -46,6 +71,13 @@ const AudioBarProvider = ({
 		isLiked: isCurrentlyLiked ?? false,
 	};
 
+	/**
+	 * Reducer function for managing audio bar state updates.
+	 *
+	 * @param audioBarData - Current state of the audio bar
+	 * @param action - Action to perform on the state
+	 * @returns Updated audio bar state
+	 */
 	const audioBarReducer = (
 		audioBarData: typeof initialStates,
 		action: ACTION_TYPE

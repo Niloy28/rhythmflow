@@ -15,6 +15,9 @@ import {
 } from "../ui/select";
 import SubmitButton from "./submit-button";
 
+/**
+ * Album data structure used by the form.
+ */
 type AlbumDataType = {
 	id: number | null;
 	year: number;
@@ -23,17 +26,28 @@ type AlbumDataType = {
 	image_src: string;
 };
 
-const AlbumForm = ({
-	title,
-	album,
-	action,
-	artists,
-}: {
+/**
+ * Props for the AlbumForm component.
+ */
+interface AlbumFormProps {
+	/** Form title displayed in the card header */
 	title: string;
+	/** Album data for editing (optional for creation) */
 	album?: AlbumDataType;
+	/** Server action to handle form submission */
 	action: (formData: FormData) => Promise<void>;
+	/** List of available artists for selection */
 	artists: { id: number; name: string }[];
-}) => {
+}
+
+/**
+ * Form component for creating and editing album records.
+ * Handles image upload with preview, artist selection, and validation.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the album form
+ */
+const AlbumForm = ({ title, album, action, artists }: AlbumFormProps) => {
 	const [imageUrl, setImageUrl] = useState<string>(album?.image_src || "");
 
 	return (

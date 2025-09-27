@@ -2,7 +2,24 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-const BackLink = ({ target, name }: { target: string; name?: string }) => {
+/**
+ * Props for the BackLink component.
+ */
+interface BackLinkProps {
+	/** Target path segment for the dashboard route */
+	target: string;
+	/** Display name for the link (defaults to target if not provided) */
+	name?: string;
+}
+
+/**
+ * Navigation link component for returning to dashboard sections.
+ * Renders a styled back link with arrow icon and descriptive text.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the back navigation link
+ */
+const BackLink = ({ target, name }: BackLinkProps) => {
 	return (
 		<Link
 			className="mt-4 flex gap-2 hover:cursor-pointer underline underline-offset-1"

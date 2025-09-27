@@ -28,10 +28,54 @@ import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
-export function SignInForm({
-	className,
-	...props
-}: React.ComponentPropsWithoutRef<"div">) {
+/**
+ * Props for the SignInForm component
+ */
+export interface SignInFormProps extends React.ComponentPropsWithoutRef<"div"> {
+	/** Optional CSS class name for styling */
+	className?: string;
+}
+
+/**
+ * User authentication form for existing users to sign in
+ *
+ * @param props - Component props including className and standard div props
+ * @returns JSX element containing the complete sign-in form interface
+ *
+ * @remarks
+ * This component provides a comprehensive sign-in experience:
+ * - Email and password authentication with validation
+ * - Form validation using Zod schema and React Hook Form
+ * - Integration with Better Auth for secure authentication
+ * - Toast notifications for error feedback
+ * - Loading states with spinner animations
+ *
+ * **Form Validation**: Uses Zod schema for client-side validation:
+ * - Email format validation
+ * - Required field validation
+ * - Real-time error display with FormMessage components
+ *
+ * **Authentication Flow**:
+ * 1. Client-side form validation
+ * 2. Better Auth email/password sign-in
+ * 3. Automatic redirect to home page on success
+ * 4. Error handling with user-friendly messages
+ *
+ * **User Experience Features**:
+ * - Disabled submit button during form submission
+ * - Loading spinner animation during authentication
+ * - Links to password reset and sign-up pages
+ * - Consistent card-based layout with clear typography
+ *
+ * **Error Handling**: Provides specific error messages:
+ * - Server errors (500): Generic "try again later" message
+ * - Authentication errors: "Username or password incorrect"
+ * - Form validation errors: Field-specific inline messages
+ *
+ * The component integrates seamlessly with the application's authentication
+ * system and provides a polished, accessible sign-in experience.
+ */
+const SignInForm = ({ className, ...props }: SignInFormProps) => {
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
@@ -41,6 +85,9 @@ export function SignInForm({
 		},
 	});
 
+	/**
+	 * Handles form submission and authentication
+	 */
 	const onSubmit = useCallback(
 		async (values: z.infer<typeof signInSchema>) => {
 			const result = await authClient.signIn.email({
@@ -143,4 +190,6 @@ export function SignInForm({
 			</Card>
 		</div>
 	);
-}
+};
+
+export default SignInForm;
