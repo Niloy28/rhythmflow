@@ -7,6 +7,13 @@ import {
 	MusicIcon,
 } from "lucide-react";
 
+/**
+ * Application navigation menu items configuration
+ *
+ * @remarks
+ * Defines the main navigation structure for the music application,
+ * including icons, titles, and URL paths for each section.
+ */
 export const NavigationItems: NavigationItem[] = [
 	{
 		title: "Home",
@@ -35,6 +42,13 @@ export const NavigationItems: NavigationItem[] = [
 	},
 ];
 
+/**
+ * Supported image MIME types for file uploads
+ *
+ * @remarks
+ * Used for validating image uploads for artist profiles, album covers, etc.
+ * Includes common web-safe image formats.
+ */
 export const imageTypes = [
 	"image/jpeg",
 	"image/jpg",

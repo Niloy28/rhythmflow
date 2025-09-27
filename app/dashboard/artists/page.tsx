@@ -11,6 +11,18 @@ import db from "@/lib/db";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Artists management dashboard page
+ *
+ * @returns JSX element displaying all artists with management options
+ *
+ * @remarks
+ * This page serves as the central hub for artist administration:
+ * - Lists all artists in the system as clickable navigation links
+ * - Provides prominent "Create New" button for adding artists
+ * - Each artist name links to their detailed management page
+ * - Uses consistent card-based layout matching other dashboard sections
+ */
 const ArtistsPage = async () => {
 	const artists = await db.selectFrom("artists").selectAll().execute();
 

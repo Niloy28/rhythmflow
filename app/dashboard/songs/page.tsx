@@ -11,6 +11,18 @@ import db from "@/lib/db";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Songs management dashboard page
+ *
+ * @returns JSX element displaying all songs with management options
+ *
+ * @remarks
+ * This page serves as the central hub for song content administration:
+ * - Lists all songs in the system as clickable management links
+ * - Provides prominent "Create New" button for adding songs
+ * - Each song name links to detailed management and preview page
+ * - Uses consistent card-based layout matching other dashboard sections
+ */
 const SongsPage = async () => {
 	const songs = await db.selectFrom("songs").selectAll().execute();
 

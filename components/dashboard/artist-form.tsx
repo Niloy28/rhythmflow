@@ -7,21 +7,35 @@ import Image from "next/image";
 import SubmitButton from "./submit-button";
 import { Label } from "../ui/label";
 
+/**
+ * Artist data structure used by the form.
+ */
 type ArtistDataType = {
 	id: number | null;
 	name: string;
 	image_src: string;
 };
 
-const ArtistForm = ({
-	title,
-	artist,
-	action,
-}: {
+/**
+ * Props for the ArtistForm component.
+ */
+interface ArtistFormProps {
+	/** Form title displayed in the card header */
 	title: string;
+	/** Artist data for editing (optional for creation) */
 	artist?: ArtistDataType;
+	/** Server action to handle form submission */
 	action: (formData: FormData) => Promise<void>;
-}) => {
+}
+
+/**
+ * Form component for creating and editing artist records.
+ * Handles image upload with preview and file size validation.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the artist form
+ */
+const ArtistForm = ({ title, artist, action }: ArtistFormProps) => {
 	const [imageUrl, setImageUrl] = useState<string>(artist?.image_src || "");
 
 	return (

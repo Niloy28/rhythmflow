@@ -8,19 +8,30 @@ import {
 } from "../ui/tooltip";
 import Link from "next/link";
 
-const AlbumTile = ({
-	id,
-	title,
-	year,
-	artist,
-	image,
-}: {
+/**
+ * Props for the AlbumTile component.
+ */
+interface AlbumTileProps {
+	/** Album ID for navigation */
 	id: number;
+	/** Album title */
 	title: string;
+	/** Release year */
 	year: number;
+	/** Artist name */
 	artist: string;
+	/** Album cover image URL */
 	image: string;
-}) => {
+}
+
+/**
+ * Tile component for displaying album information in a grid layout.
+ * Shows album cover, title, and provides detailed tooltip on hover.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the album tile with tooltip
+ */
+const AlbumTile = ({ id, title, year, artist, image }: AlbumTileProps) => {
 	return (
 		<TooltipProvider>
 			<div className="flex flex-col justify-center items-center">

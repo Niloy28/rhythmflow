@@ -15,6 +15,9 @@ import { authClient } from "@/lib/auth-client";
 import PlaylistMenu from "../playlist-menu";
 import { cn } from "@/lib/utils";
 
+/**
+ * Song data structure for the tile component.
+ */
 type SongTileProp = {
 	song: {
 		id: number | null;
@@ -28,10 +31,22 @@ type SongTileProp = {
 	};
 };
 
+/**
+ * Interactive tile component for displaying and playing songs.
+ * Handles audio bar state updates, user interactions, and playlist management.
+ * Shows like button and playlist menu for authenticated users.
+ *
+ * @param props - Component props containing song data
+ * @returns JSX element containing the interactive song tile
+ */
 const SongTile = ({ song }: SongTileProp) => {
 	const audioBarDispatch = useAudioBarDispatchContext();
 	const [isPlaylistMenuOpen, setIsPlaylistMenuOpen] = useState(false);
 
+	/**
+	 * Handles song selection by updating audio bar context and cookies.
+	 * Dispatches all necessary song data to the audio bar state.
+	 */
 	const onSongClicked = async () => {
 		audioBarDispatch({
 			type: "SET_SONG_ID",

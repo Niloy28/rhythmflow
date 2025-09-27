@@ -29,10 +29,37 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-export function SignupForm({
-	className,
-	...props
-}: React.ComponentPropsWithoutRef<"div">) {
+/**
+ * Props for the SignupForm component
+ */
+export interface SignupFormProps extends React.ComponentPropsWithoutRef<"div"> {
+	/** Optional CSS class name for styling */
+	className?: string;
+}
+
+/**
+ * User registration form for creating new accounts
+ *
+ * @param props - Component props including className and standard div props
+ * @returns JSX element containing the complete sign-up form interface
+ *
+ * @remarks
+ * This component provides a comprehensive user registration experience:
+ * - Collects user name, email, and password with validation
+ * - Optional profile image field for user avatars
+ * - Form validation using Zod schema and React Hook Form
+ * - Integration with Better Auth for secure account creation
+ *
+ * **Form Fields and Validation**:
+ * - Name: Required, trimmed of whitespace
+ * - Email: Must be valid email format
+ * - Password: Minimum 8 characters with at least 1 number
+ * - Image: Optional profile image URL
+ *
+ * **Navigation**: Uses Next.js router for programmatic navigation
+ * after successful registration.
+ */
+const SignupForm = ({ className, ...props }: SignupFormProps) => {
 	const router = useRouter();
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signUpSchema>>({
@@ -45,6 +72,9 @@ export function SignupForm({
 		},
 	});
 
+	/**
+	 * Handles form submission and account creation
+	 */
 	const onSubmit = useCallback(
 		async (values: z.infer<typeof signUpSchema>) => {
 			const result = await authClient.signUp.email({
@@ -146,4 +176,6 @@ export function SignupForm({
 			</Card>
 		</div>
 	);
-}
+};
+
+export default SignupForm;

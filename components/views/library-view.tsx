@@ -10,6 +10,13 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { fetchLikedSongIDs } from "@/lib/server-utils";
 
+/**
+ * Library view component that displays a curated selection of music content.
+ * Fetches and displays randomized lists of songs, albums, and artists from the database.
+ * Includes user-specific liked song information when authenticated.
+ *
+ * @returns JSX element containing the library view with shuffled content lists
+ */
 const LibraryView = async () => {
 	let songs = await db
 		.selectFrom("songs")
@@ -45,6 +52,7 @@ const LibraryView = async () => {
 		(await auth.api.getSession({ headers: await headers() }))?.user.id ?? "";
 	const likedSongIDs = await fetchLikedSongIDs(userID);
 
+	// Shuffle arrays and limit to 10 items each
 	shuffleArray(songs);
 	shuffleArray(albums);
 	shuffleArray(artists);

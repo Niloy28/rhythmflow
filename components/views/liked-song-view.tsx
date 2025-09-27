@@ -6,6 +6,13 @@ import Link from "next/link";
 import db from "@/lib/db";
 import SongTile from "../tiles/song-tile";
 
+/**
+ * Liked songs view component that displays user's favorited tracks.
+ * Shows authentication prompt for unauthenticated users or renders
+ * the user's liked songs with appropriate empty state messaging.
+ *
+ * @returns JSX element containing the liked songs view with conditional content
+ */
 const LikedSongView = async () => {
 	const session = await auth.api.getSession({
 		headers: await headers(),

@@ -9,7 +9,11 @@ import LikeSongButton from "./like-song-button";
 import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
 import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
 
+/**
+ * Props for the ArtistSongItem component
+ */
 type ArtistSongItemProps = {
+	/** Song data including metadata and like status */
 	song: {
 		id: number | null;
 		name: string;
@@ -21,21 +25,40 @@ type ArtistSongItemProps = {
 		year: number;
 		liked: boolean;
 	};
+	/** Optional CSS class name for styling */
 	className?: string;
 };
 
+/**
+ * Table row component for displaying a song within an artist discography context
+ *
+ * @param props - Component props containing song data and styling options
+ * @returns JSX element representing a clickable song row in an artist's song table
+ *
+ * @remarks
+ * This component renders a song as a table row specifically within artist views:
+ * - Displays song name, release year, duration, album info, and like status
+ * - Shows album artwork and name in a dedicated column
+ * - Clicking the row loads the song into the global audio player
+ * - Synchronizes like status with the global audio player state
+ */
 const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 	const [isLiked, setIsLiked] = useState(song.liked);
 	const audioBar = useAudioBarContext();
 	const audioBarDispatch = useAudioBarDispatchContext();
 
+	// Sync like status with global audio player state
 	useEffect(() => {
 		if (audioBar.songID === song.id?.toString()) {
 			setIsLiked(audioBar.isLiked);
 		}
 	}, [audioBar, song.id]);
 
+	/**
+	 * Handles song selection and audio player state updates
+	 */
 	const onSongItemClicked = async () => {
+		// Update global audio player state
 		audioBarDispatch({
 			type: "SET_SONG_ID",
 			payload: song.id!.toString(),
@@ -76,6 +99,7 @@ const ArtistSongItem = ({ song, className }: ArtistSongItemProps) => {
 			payload: isLiked,
 		});
 
+		// Persist state in cookies
 		await setAudioBarCookies(
 			song.id!,
 			song.name,

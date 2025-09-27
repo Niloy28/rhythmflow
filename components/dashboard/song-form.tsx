@@ -14,6 +14,9 @@ import {
 } from "../ui/select";
 import SubmitButton from "./submit-button";
 
+/**
+ * Song data structure used by the form.
+ */
 type SongDataType = {
 	id: number | null;
 	year: number;
@@ -23,17 +26,28 @@ type SongDataType = {
 	duration: number;
 };
 
-const SongForm = ({
-	title,
-	song,
-	action,
-	albums,
-}: {
+/**
+ * Props for the SongForm component.
+ */
+interface SongFormProps {
+	/** Form title displayed in the card header */
 	title: string;
+	/** Song data for editing (optional for creation) */
 	song?: SongDataType;
+	/** Server action to handle form submission */
 	action: (formData: FormData) => Promise<void>;
+	/** List of available albums for selection */
 	albums: { id: number; name: string }[];
-}) => {
+}
+
+/**
+ * Form component for creating and editing song records.
+ * Handles audio file upload with automatic duration extraction.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the song form
+ */
+const SongForm = ({ title, song, action, albums }: SongFormProps) => {
 	const [audioDuration, setAudioDuration] = useState<number>(
 		song?.duration ?? 0
 	);
@@ -69,6 +83,7 @@ const SongForm = ({
 						}}
 					/>
 
+					{/* Hidden audio element for duration extraction */}
 					<audio
 						className="hidden"
 						ref={audioRef}

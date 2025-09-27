@@ -15,6 +15,25 @@ import db from "@/lib/db";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+/**
+ * Song deletion confirmation page for dashboard administration
+ *
+ * @param params - Route parameters containing the song ID to delete
+ * @returns JSX element with song deletion confirmation form
+ *
+ * @remarks
+ * This page provides a critical confirmation step before permanent song removal:
+ * - Displays the song name clearly for administrator verification
+ * - Shows prominent warning about the irreversible nature of the action
+ * - Includes hidden form fields containing necessary deletion data
+ * - Provides cancel option to abort and return to song details
+ *
+ * **Deletion Process**: Upon confirmation, the server action will:
+ * - Remove the song record from the database
+ * - Delete the associated audio file from R2 storage
+ * - Clean up any related user interactions (likes, playlists)
+ * - Redirect to songs dashboard with confirmation
+ */
 const SongDeletePage = async ({
 	params,
 }: {
@@ -47,6 +66,7 @@ const SongDeletePage = async ({
 					action={deleteSong}
 					className="flex gap-2 justify-center items-center p-2 mt-4"
 				>
+					{/* Hidden inputs for server action */}
 					<Input name="id" value={song.id!} type="hidden" />
 					<Input name="audio" value={song.audio!} type="hidden" />
 					<DeleteButton />

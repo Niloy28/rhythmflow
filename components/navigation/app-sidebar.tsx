@@ -17,6 +17,13 @@ import Link from "next/link";
 import Logo from "../logo";
 import NavUser from "./nav-user";
 
+/**
+ * Main application sidebar component with collapsible functionality.
+ * Contains navigation menu, logo, and user authentication section.
+ * Renders navigation items from constants and includes user dropdown.
+ *
+ * @returns JSX element containing the complete sidebar layout
+ */
 const AppSidebar = async () => {
 	return (
 		<Sidebar collapsible="icon">

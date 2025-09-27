@@ -7,6 +7,20 @@ import db from "./db";
 import s3 from "./s3";
 import { computeSHA256 } from "./utils";
 
+/**
+ * Creates a presigned URL for secure file upload to R2 bucket
+ *
+ * @param fileName - Name of the file to upload
+ * @param fileType - MIME type of the file
+ * @param fileSize - Size of the file in bytes
+ * @param checksum - SHA256 checksum for integrity verification
+ * @param bucketName - Target R2 bucket name
+ * @returns Promise resolving to a presigned upload URL
+ *
+ * @remarks
+ * The presigned URL expires in 120 seconds and includes checksum validation
+ * for secure, direct client-to-storage uploads.
+ */
 export const createPresignedUrlForUpload = async (
 	fileName: string,
 	fileType: string,
@@ -25,6 +39,17 @@ export const createPresignedUrlForUpload = async (
 	return await getSignedUrl(s3, command, { expiresIn: 120 });
 };
 
+/**
+ * Uploads a file to the specified R2 bucket
+ *
+ * @param file - File object to upload
+ * @param bucketName - Target R2 bucket name
+ * @returns Promise resolving to the fetch Response object
+ *
+ * @remarks
+ * Creates a presigned URL and performs the actual upload with proper
+ * content type headers and SHA256 checksum validation.
+ */
 export const uploadFileToBucket = async (file: File, bucketName: string) => {
 	const url = await createPresignedUrlForUpload(
 		file.name,
@@ -43,6 +68,16 @@ export const uploadFileToBucket = async (file: File, bucketName: string) => {
 	});
 };
 
+/**
+ * Deletes a file from the specified R2 bucket
+ *
+ * @param fileName - Name of the file to delete
+ * @param bucketName - Source R2 bucket name
+ * @returns Promise that resolves when deletion is complete
+ *
+ * @remarks
+ * Used for cleanup operations when updating or removing media files.
+ */
 export const deleteFileFromBucket = async (
 	fileName: string,
 	bucketName: string
@@ -55,6 +90,16 @@ export const deleteFileFromBucket = async (
 	await s3.send(command);
 };
 
+/**
+ * Fetches all song IDs that a user has liked
+ *
+ * @param userID - The user's unique identifier
+ * @returns Promise resolving to an array of liked song IDs
+ *
+ * @remarks
+ * Used for determining which songs to display as "liked" in the UI
+ * and for playlist management operations.
+ */
 export const fetchLikedSongIDs = async (userID: string) => {
 	return (
 		await db
@@ -65,6 +110,23 @@ export const fetchLikedSongIDs = async (userID: string) => {
 	).map((song) => song.song_id);
 };
 
+/**
+ * Sets all audio player state cookies for the current song
+ *
+ * @param id - Song ID
+ * @param name - Song name
+ * @param artist - Artist name
+ * @param album - Album name
+ * @param year - Release year
+ * @param albumArt - Album artwork URL
+ * @param audio - Audio file URL
+ * @param isLiked - Whether the song is liked by current user
+ * @returns Promise that resolves when all cookies are set
+ *
+ * @remarks
+ * Maintains audio player state across page navigation and browser sessions.
+ * Used by the persistent audio player component.
+ */
 export const setAudioBarCookies = async (
 	id: number,
 	name: string,
@@ -85,6 +147,16 @@ export const setAudioBarCookies = async (
 	await setLikedSongCookie(isLiked);
 };
 
+/**
+ * Updates the liked status cookie for the current song
+ *
+ * @param isLiked - Whether the current song is liked
+ * @returns Promise that resolves when cookie is updated
+ *
+ * @remarks
+ * Used when users like/unlike songs to maintain UI state consistency
+ * without requiring full page refresh.
+ */
 export const setLikedSongCookie = async (isLiked: boolean) => {
 	(await cookies()).set("isCurrentlyLiked", isLiked ? "true" : "false");
 };

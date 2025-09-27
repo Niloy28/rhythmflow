@@ -3,9 +3,29 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
+/**
+ * Main dashboard landing page for content administration
+ *
+ * @returns JSX element with dashboard navigation menu
+ *
+ * @remarks
+ * This page serves as the central hub for content management operations.
+ * It provides navigation links to all administrative sections:
+ * - Artists management
+ * - Albums management
+ * - Songs management
+ *
+ * **Security Note**: This dashboard is restricted to development environment
+ * only and will redirect to the home page in production. This prevents
+ * unauthorized access to administrative functions in deployed environments.
+ *
+ * The page uses a simple card layout with bullet-pointed navigation
+ * links for easy access to different management sections.
+ */
 const DashboardPage = async () => {
 	const env = process.env.NODE_ENV;
 
+	// Restrict dashboard access to development environment only
 	if (env !== "development") {
 		redirect("/");
 	}

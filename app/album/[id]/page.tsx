@@ -15,8 +15,31 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * Album detail page displaying album information and associated songs
+ *
+ * @param params - Route parameters containing the album ID
+ * @returns JSX element displaying album details and song list
+ *
+ * @remarks
+ * This page performs several database queries to gather complete album information:
+ * - Fetches all songs associated with the album including artist information
+ * - Retrieves album metadata and associated artist details
+ * - Gets the current user's liked songs to display like status
+ *
+ * The page displays:
+ * - Album artwork and metadata (name, year, artist with profile image)
+ * - Clickable artist link leading to artist page
+ * - Table of all songs in the album with playback and like functionality
+ *
+ * Authentication is optional - if no user is logged in, like functionality is disabled.
+ *
+ * @throws Error if the album with the specified ID is not found
+ */
 const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 	const id = (await params).id;
+
+	// Fetch all songs in the album with artist information
 	const songs = await db
 		.selectFrom("songs")
 		.where("songs.album_id", "=", id)
@@ -31,6 +54,8 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 			"artists.name as artist",
 		])
 		.execute();
+
+	// Fetch album details with artist information
 	const album = await db
 		.selectFrom("albums")
 		.where("albums.id", "=", id)
@@ -45,6 +70,7 @@ const AlbumPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 		])
 		.executeTakeFirst();
 
+	// Get current user's liked songs for like status display
 	const userID =
 		(await auth.api.getSession({ headers: await headers() }))?.session.userId ??
 		"";

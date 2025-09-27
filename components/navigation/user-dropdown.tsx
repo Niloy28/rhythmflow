@@ -23,9 +23,10 @@ import { getAcronym } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
-const UserDropdown = ({
-	user,
-}: {
+/**
+ * User data structure for the dropdown component.
+ */
+interface UserDropdownProps {
 	user: {
 		id: string;
 		email: string;
@@ -35,7 +36,17 @@ const UserDropdown = ({
 		updatedAt: Date;
 		image?: string | null | undefined;
 	};
-}) => {
+}
+
+/**
+ * User dropdown component for authenticated users in the sidebar.
+ * Displays user information, avatar, and account management options.
+ * Handles sign-out functionality with navigation redirect.
+ *
+ * @param props - Component props containing user data
+ * @returns JSX element containing the user dropdown menu
+ */
+const UserDropdown = ({ user }: UserDropdownProps) => {
 	const { isMobile } = useSidebar();
 	const router = useRouter();
 	const userAcronym = getAcronym(user.name);

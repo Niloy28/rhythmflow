@@ -2,7 +2,22 @@ import React from "react";
 import { ListMusicIcon } from "lucide-react";
 import { addToWatchLater } from "@/actions/playlist-actions";
 
-const WatchLaterButton = ({ songID }: { songID: number }) => {
+/**
+ * Props for the WatchLaterButton component.
+ */
+interface WatchLaterButtonProps {
+	/** ID of the song to add to watch later playlist */
+	songID: number;
+}
+
+/**
+ * Button component for adding songs to the "Watch Later" playlist.
+ * Uses server action binding to handle playlist addition on form submission.
+ *
+ * @param props - Component props
+ * @returns JSX element containing the watch later button form
+ */
+const WatchLaterButton = ({ songID }: WatchLaterButtonProps) => {
 	const boundAddToWatchLater = addToWatchLater.bind(null, songID);
 
 	return (

@@ -1,7 +1,11 @@
 import React from "react";
 import SongTile from "../tiles/song-tile";
 
+/**
+ * Props for the SongList component
+ */
 type SongListProps = {
+	/** Array of song data for display */
 	songs: {
 		id: number | null;
 		name: string;
@@ -14,6 +18,19 @@ type SongListProps = {
 	}[];
 };
 
+/**
+ * Horizontal scrolling list component for displaying song tiles
+ *
+ * @param props - Component props containing song data array
+ * @returns JSX element with titled song grid layout
+ *
+ * @remarks
+ * This component provides a scrollable song browsing interface:
+ * - Displays "Songs" section header for clear content categorization
+ * - Horizontal scrolling container for handling large song collections
+ * - Uses SongTile components for individual song display and interaction
+ * - Overflow scroll prevents layout breaking with many songs
+ */
 const SongList = ({ songs }: SongListProps) => {
 	return (
 		<div className="w-full">

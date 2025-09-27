@@ -13,6 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { capitalizeFirstLetter } from "@/lib/utils";
 
+/**
+ * Theme toggle component that allows users to switch between light, dark, and system themes.
+ * Uses next-themes for theme management and displays current theme selection.
+ *
+ * @returns JSX element containing the theme selector dropdown
+ */
 const ThemeToggle = () => {
 	const { setTheme, theme } = useTheme();
 

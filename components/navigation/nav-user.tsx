@@ -12,6 +12,13 @@ import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 
+/**
+ * Navigation user component that handles authentication states in the sidebar.
+ * Shows loading spinner during auth check, user dropdown when authenticated,
+ * or sign-in link when not authenticated.
+ *
+ * @returns JSX element containing the user authentication section
+ */
 const NavUser = () => {
 	const { data: session, isPending } = authClient.useSession();
 
