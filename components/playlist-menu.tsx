@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
 	DropdownMenu,
@@ -8,7 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { Ellipsis, PlusIcon } from "lucide-react";
+import { Ellipsis, Loader2, PlusIcon } from "lucide-react";
 import WatchLaterButton from "./watch-later-button";
 import {
 	Dialog,
@@ -22,6 +24,7 @@ import {
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { createPlaylist } from "@/actions/playlist-actions";
 
 /**
  * Props for the PlaylistMenu component.
@@ -48,9 +51,12 @@ const PlaylistMenu = ({
 	onPlaylistMenuOpen,
 }: PlaylistMenuProps) => {
 	// TODO: Fetch user playlists and populate the menu dynamically
+	const [open, setOpen] = React.useState(false);
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
+
 	return (
 		// Wrap in Dialog for "Create New Playlist" functionality
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DropdownMenu onOpenChange={onPlaylistMenuOpen}>
 				<DropdownMenuTrigger
 					className={cn(
@@ -75,29 +81,42 @@ const PlaylistMenu = ({
 			</DropdownMenu>
 
 			{/* Playlist creation dialog */}
-			<form action="">
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Create New Playlist</DialogTitle>
-					</DialogHeader>
-					<div className="grid gap-4">
-						<div className="grid gap-3">
-							<Label htmlFor="playlist-name">Name</Label>
-							<Input
-								id="playlist-name"
-								name="playlist-name"
-								defaultValue="New Playlist"
-							/>
-						</div>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Create New Playlist</DialogTitle>
+				</DialogHeader>
+				<div className="grid gap-4">
+					<div className="grid gap-3">
+						<Label htmlFor="playlist-name">Name</Label>
+						<Input
+							id="playlist-name"
+							name="playlist-name"
+							defaultValue="New Playlist"
+						/>
 					</div>
-					<DialogFooter>
-						<DialogClose asChild>
-							<Button variant="outline">Cancel</Button>
-						</DialogClose>
-						<Button type="submit">Create</Button>
-					</DialogFooter>
-				</DialogContent>
-			</form>
+				</div>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button variant="outline">Cancel</Button>
+					</DialogClose>
+					<Button
+						disabled={isSubmitting}
+						onClick={() => {
+							const playlistName = (
+								document.getElementById("playlist-name") as HTMLInputElement
+							).value;
+
+							setIsSubmitting(true);
+							createPlaylist(playlistName).then(() => {
+								setOpen(false);
+								setIsSubmitting(false);
+							});
+						}}
+					>
+						{isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
 		</Dialog>
 	);
 };

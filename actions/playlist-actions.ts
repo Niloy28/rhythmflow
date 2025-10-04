@@ -66,3 +66,20 @@ export const removeFromWatchLater = async (songID: number) => {
 	// Remove record from watch_later table
 	await db.deleteFrom("watch_later").where("song_id", "=", songID).execute();
 };
+
+/**
+ * Create new playlist for the current user
+ * @param playlistName - Playlist name
+ */
+export const createPlaylist = async (playlistName: string) => {
+	const userID = (await auth.api.getSession({ headers: await headers() }))!.user
+		.id!;
+
+	await db
+		.insertInto("playlists")
+		.values({
+			name: playlistName.trim(),
+			user_id: userID,
+		})
+		.executeTakeFirstOrThrow();
+};

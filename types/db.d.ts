@@ -45,6 +45,18 @@ export interface LikedSongs {
   user_id: string;
 }
 
+export interface Playlists {
+  id: Generated<string | null>;
+  name: string;
+  user_id: string;
+}
+
+export interface PlaylistSongs {
+  id: Generated<number | null>;
+  playlist_id: string;
+  song_id: number;
+}
+
 export interface Session {
   createdAt: string;
   expiresAt: string;
@@ -95,6 +107,8 @@ export interface DB {
   albums: Albums;
   artists: Artists;
   liked_songs: LikedSongs;
+  playlist_songs: PlaylistSongs;
+  playlists: Playlists;
   session: Session;
   songs: Songs;
   user: User;
