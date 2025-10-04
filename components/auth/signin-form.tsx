@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signInSchema } from "@/lib/zod-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback } from "react";
 import {
 	Form,
 	FormControl,
@@ -25,8 +24,8 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { authClient } from "@/lib/auth-client";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * Props for the SignInForm component
@@ -71,12 +70,8 @@ export interface SignInFormProps extends React.ComponentPropsWithoutRef<"div"> {
  * - Server errors (500): Generic "try again later" message
  * - Authentication errors: "Username or password incorrect"
  * - Form validation errors: Field-specific inline messages
- *
- * The component integrates seamlessly with the application's authentication
- * system and provides a polished, accessible sign-in experience.
  */
 const SignInForm = ({ className, ...props }: SignInFormProps) => {
-	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
 		defaultValues: {
@@ -88,32 +83,25 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
 	/**
 	 * Handles form submission and authentication
 	 */
-	const onSubmit = useCallback(
-		async (values: z.infer<typeof signInSchema>) => {
-			const result = await authClient.signIn.email({
-				email: values.email,
-				password: values.password,
-				callbackURL: "/",
-			});
+	const onSubmit = async (values: z.infer<typeof signInSchema>) => {
+		const result = await authClient.signIn.email({
+			email: values.email,
+			password: values.password,
+			callbackURL: "/",
+		});
 
-			if (result.error) {
-				let errorMsg: string;
+		if (result.error) {
+			let errorMsg: string;
 
-				if (result.error.status === 500) {
-					errorMsg = "An unexpected error occurred. Please try again later.";
-				} else {
-					errorMsg = "Your username or password is incorrect.";
-				}
-
-				toast({
-					variant: "destructive",
-					title: "Uh oh! Something went wrong.",
-					description: errorMsg,
-				});
+			if (result.error.status === 500) {
+				errorMsg = "An unexpected error occurred. Please try again later.";
+			} else {
+				errorMsg = "Your username or password is incorrect.";
 			}
-		},
-		[toast]
-	);
+
+			toast.error(errorMsg);
+		}
+	};
 
 	return (
 		<div className={cn("flex flex-col gap-6", className)} {...props}>

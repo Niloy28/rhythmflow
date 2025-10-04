@@ -23,11 +23,10 @@ import {
 	FormLabel,
 	FormMessage,
 } from "../ui/form";
-import { useCallback } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 /**
  * Props for the SignupForm component
@@ -61,7 +60,6 @@ export interface SignupFormProps extends React.ComponentPropsWithoutRef<"div"> {
  */
 const SignupForm = ({ className, ...props }: SignupFormProps) => {
 	const router = useRouter();
-	const { toast } = useToast();
 	const form = useForm<z.infer<typeof signUpSchema>>({
 		resolver: zodResolver(signUpSchema),
 		defaultValues: {
@@ -75,29 +73,24 @@ const SignupForm = ({ className, ...props }: SignupFormProps) => {
 	/**
 	 * Handles form submission and account creation
 	 */
-	const onSubmit = useCallback(
-		async (values: z.infer<typeof signUpSchema>) => {
-			const result = await authClient.signUp.email({
-				email: values.email,
-				name: values.name,
-				password: values.password,
-				image: values.image ?? "",
-				callbackURL: "/",
-			});
+	const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+		const result = await authClient.signUp.email({
+			email: values.email,
+			name: values.name,
+			password: values.password,
+			image: values.image ?? "",
+			callbackURL: "/",
+		});
 
-			if (result.error) {
-				toast({
-					variant: "destructive",
-					title: "Uh oh! Something went wrong.",
-					description:
-						"There was a problem with the request. Please try again later.",
-				});
-			} else {
-				router.push("/");
-			}
-		},
-		[toast, router]
-	);
+		if (result.error) {
+			toast.message("Uh oh! Something went wrong.", {
+				description:
+					"There was a problem with the request. Please try again later.",
+			});
+		} else {
+			router.push("/");
+		}
+	};
 
 	return (
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
