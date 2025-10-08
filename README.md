@@ -7,7 +7,7 @@ This is a music streaming site currently being built with React and Next.js and 
 
 - View songs based on artist or album
 - Stream music for free!
-- (Planned) Ability to like songs
+- Ability to like songs
 - (Planned) Ability to create playlists
 
 ## Technologies ⚙️
