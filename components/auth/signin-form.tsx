@@ -24,8 +24,16 @@ import {
 	FormMessage,
 } from "../ui/form";
 import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+	AlertDialog,
+	AlertDialogContent,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { useState } from "react";
 
 /**
  * Props for the SignInForm component
@@ -72,6 +80,9 @@ export interface SignInFormProps extends React.ComponentPropsWithoutRef<"div"> {
  * - Form validation errors: Field-specific inline messages
  */
 const SignInForm = ({ className, ...props }: SignInFormProps) => {
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const [isSignedIn, setIsSignedIn] = useState(false);
+
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
 		defaultValues: {
@@ -91,92 +102,113 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
 		});
 
 		if (result.error) {
+			// Close alert dialog in case of sign in error
+			setDialogOpen(false);
 			let errorMsg: string;
-
 			if (result.error.status === 500) {
 				errorMsg = "An unexpected error occurred. Please try again later.";
 			} else {
 				errorMsg = "Your username or password is incorrect.";
 			}
-
 			toast.error(errorMsg);
+		} else {
+			setIsSignedIn(true);
 		}
 	};
 
 	return (
-		<div className={cn("flex flex-col gap-6", className)} {...props}>
-			<Card>
-				<CardHeader>
-					<CardTitle className="text-2xl">Sign In</CardTitle>
-					<CardDescription>
-						Enter your credentials below to sign in to your account
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)}>
-							<FormField
-								control={form.control}
-								name="email"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Email</FormLabel>
-										<FormControl>
-											<Input
-												placeholder="email@example.com"
-												type="email"
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
+		<AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+			<div className={cn("flex flex-col gap-6", className)} {...props}>
+				<Card>
+					<CardHeader>
+						<CardTitle className="text-2xl">Sign In</CardTitle>
+						<CardDescription>
+							Enter your credentials below to sign in to your account
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Form {...form}>
+							<form onSubmit={form.handleSubmit(onSubmit)}>
+								<FormField
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input
+													placeholder="email@example.com"
+													type="email"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-							<FormField
-								control={form.control}
-								name="password"
-								render={({ field }) => (
-									<FormItem>
-										<div className="flex items-center">
-											<FormLabel>Password</FormLabel>
-											{/* TODO: Add password reset feature */}
-											<Link
-												href="/password-reset"
-												className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-											>
-												Forgot your password?
-											</Link>
-										</div>
-										<FormControl>
-											<Input type="password" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-
-							<Button
-								type="submit"
-								className="w-full mt-4"
-								disabled={form.formState.isSubmitting}
-							>
-								Sign In
-								{form.formState.isSubmitting && (
-									<Loader2 className="animate-spin" />
-								)}
-							</Button>
-							<div className="mt-4 text-center text-sm">
-								Don&apos;t have an account?{" "}
-								<Link href="/signup" className="underline underline-offset-4">
-									Sign up
-								</Link>
-							</div>
-						</form>
-					</Form>
-				</CardContent>
-			</Card>
-		</div>
+								<FormField
+									control={form.control}
+									name="password"
+									render={({ field }) => (
+										<FormItem>
+											<div className="flex items-center">
+												<FormLabel>Password</FormLabel>
+												{/* TODO: Add password reset feature */}
+												<Link
+													href="/password-reset"
+													className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+												>
+													Forgot your password?
+												</Link>
+											</div>
+											<FormControl>
+												<Input type="password" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<AlertDialogTrigger asChild>
+									<Button
+										type="submit"
+										className="w-full mt-4"
+										disabled={form.formState.isSubmitting}
+									>
+										Sign In
+										{form.formState.isSubmitting && (
+											<Loader2 className="animate-spin" />
+										)}
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle className="flex justify-between items-center">
+											<span>
+												{isSignedIn ? "Signed In Successfully" : "Signing In"}
+											</span>
+											<span>
+												{isSignedIn ? (
+													<Check />
+												) : (
+													<Loader2 className="animate-spin" />
+												)}
+											</span>
+										</AlertDialogTitle>
+									</AlertDialogHeader>
+								</AlertDialogContent>
+								<div className="mt-4 text-center text-sm">
+									Don&apos;t have an account?{" "}
+									<Link href="/signup" className="underline underline-offset-4">
+										Sign up
+									</Link>
+								</div>
+							</form>
+						</Form>
+					</CardContent>
+				</Card>
+			</div>
+		</AlertDialog>
 	);
 };
 
