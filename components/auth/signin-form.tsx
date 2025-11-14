@@ -117,58 +117,58 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
 	};
 
 	return (
-		<AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-			<div className={cn("flex flex-col gap-6", className)} {...props}>
-				<Card>
-					<CardHeader>
-						<CardTitle className="text-2xl">Sign In</CardTitle>
-						<CardDescription>
-							Enter your credentials below to sign in to your account
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)}>
-								<FormField
-									control={form.control}
-									name="email"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Email</FormLabel>
-											<FormControl>
-												<Input
-													placeholder="email@example.com"
-													type="email"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+		<div className={cn("flex flex-col gap-6", className)} {...props}>
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-2xl">Sign In</CardTitle>
+					<CardDescription>
+						Enter your credentials below to sign in to your account
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)}>
+							<FormField
+								control={form.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input
+												placeholder="email@example.com"
+												type="email"
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-								<FormField
-									control={form.control}
-									name="password"
-									render={({ field }) => (
-										<FormItem>
-											<div className="flex items-center">
-												<FormLabel>Password</FormLabel>
-												{/* TODO: Add password reset feature */}
-												<Link
-													href="/password-reset"
-													className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-												>
-													Forgot your password?
-												</Link>
-											</div>
-											<FormControl>
-												<Input type="password" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+							<FormField
+								control={form.control}
+								name="password"
+								render={({ field }) => (
+									<FormItem>
+										<div className="flex items-center">
+											<FormLabel>Password</FormLabel>
+											{/* TODO: Add password reset feature */}
+											<Link
+												href="/password-reset"
+												className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+											>
+												Forgot your password?
+											</Link>
+										</div>
+										<FormControl>
+											<Input type="password" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
 								<AlertDialogTrigger asChild>
 									<Button
 										type="submit"
@@ -197,18 +197,18 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
 										</AlertDialogTitle>
 									</AlertDialogHeader>
 								</AlertDialogContent>
-								<div className="mt-4 text-center text-sm">
-									Don&apos;t have an account?{" "}
-									<Link href="/signup" className="underline underline-offset-4">
-										Sign up
-									</Link>
-								</div>
-							</form>
-						</Form>
-					</CardContent>
-				</Card>
-			</div>
-		</AlertDialog>
+							</AlertDialog>
+							<div className="mt-4 text-center text-sm">
+								Don&apos;t have an account?{" "}
+								<Link href="/signup" className="underline underline-offset-4">
+									Sign up
+								</Link>
+							</div>
+						</form>
+					</Form>
+				</CardContent>
+			</Card>
+		</div>
 	);
 };
 
