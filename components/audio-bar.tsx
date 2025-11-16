@@ -1,6 +1,5 @@
 "use client";
 
-import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
 import { Disc2Icon, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
@@ -9,6 +8,8 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import ProgressBar from "./progress-bar";
 import VolumeSlider from "./volume-slider";
+import { useAtomValue } from "jotai";
+import audioBarAtom from "./atoms/audio-bar-atom";
 
 /**
  * Persistent audio player component that appears at the bottom of the screen
@@ -28,7 +29,7 @@ const AudioBar = () => {
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const audioRef = useRef<HTMLAudioElement>(null);
-	const audioBar = useAudioBarContext();
+	const audioBar = useAtomValue(audioBarAtom);
 	const user = authClient.useSession();
 
 	// Set up audio event listeners for progress tracking

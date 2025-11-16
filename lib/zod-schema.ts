@@ -44,3 +44,23 @@ export const signInSchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(1),
 });
+
+/**
+ * Validation schema for audio bar cookie data
+ */
+export const audioBarCookieSchema = z.object({
+	songID: z.string().min(1),
+	songName: z.string().min(1),
+	artist: z.string().min(1),
+	album: z.string().min(1),
+	year: z.string().min(1),
+	albumArt: z.string().min(1),
+	audioSrc: z.string().min(1),
+	isLiked: z.string().refine((val) => val === "true" || val === "false", {
+		message: "isLiked must be 'true' or 'false'",
+	}),
+	volume: z.preprocess(
+		(vol) => parseFloat(vol as string),
+		z.number().positive().max(1)
+	),
+});

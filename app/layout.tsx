@@ -3,11 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/navigation/app-sidebar";
-import { cookies } from "next/headers";
 import AudioBar from "@/components/audio-bar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import AudioBarProvider from "@/components/providers/audio-bar-provider";
 import { Toaster } from "@/components/ui/sonner";
+import JotaiProvider from "@/components/providers/jotai-provider";
+import { getAuduioBarCookies } from "@/lib/server-utils";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -29,35 +29,19 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const currentSongID = (await cookies()).get("currentSongID")?.value;
-	const currentSongName = (await cookies()).get("currentSongName")?.value;
-	const currentArtist = (await cookies()).get("currentArtist")?.value;
-	const currentAlbum = (await cookies()).get("currentAlbum")?.value;
-	const currentYear = (await cookies()).get("currentYear")?.value;
-	const currentlyAudioSrc = (await cookies()).get("currentAudioSrc")?.value;
-	const currentAlbumArt = (await cookies()).get("currentAlbumArt")?.value;
-	const isCurrentlyLiked = (await cookies()).get("isCurrentlyLiked")?.value;
+	const defaultAudioBarCookies = await getAuduioBarCookies();
 
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-					<AudioBarProvider
-						currentSongID={currentSongID}
-						currentSongName={currentSongName}
-						currentArtist={currentArtist}
-						currentAlbum={currentAlbum}
-						currentYear={currentYear}
-						currentAlbumArt={currentAlbumArt}
-						currentAudioSrc={currentlyAudioSrc}
-						isCurrentlyLiked={isCurrentlyLiked === "true"}
+				<JotaiProvider atomValues={defaultAudioBarCookies}>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
 					>
 						<SidebarProvider defaultOpen={false}>
 							<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -72,8 +56,8 @@ export default async function RootLayout({
 							</main>
 							<Toaster />
 						</SidebarProvider>
-					</AudioBarProvider>
-				</ThemeProvider>
+					</ThemeProvider>
+				</JotaiProvider>
 			</body>
 		</html>
 	);

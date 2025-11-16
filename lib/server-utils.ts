@@ -147,6 +147,29 @@ export const setAudioBarCookies = async (
 	await setLikedSongCookie(isLiked);
 };
 
+export const getAuduioBarCookies = async () => {
+	const id = (await cookies()).get("currentSongID");
+	const name = (await cookies()).get("currentSongName");
+	const artist = (await cookies()).get("currentArtist");
+	const album = (await cookies()).get("currentAlbum");
+	const year = (await cookies()).get("currentYear");
+	const albumArt = (await cookies()).get("currentAlbumArt");
+	const source = (await cookies()).get("currentAudioSrc");
+	const isLiked = await getLikedSongCookie();
+
+	return {
+		songID: id ? id.value : "",
+		songName: name ? name.value : "",
+		artist: artist ? artist.value : "",
+		album: album ? album.value : "",
+		year: year ? year.value : "",
+		albumArt: albumArt ? albumArt.value : "",
+		audioSrc: source ? source.value : "",
+		isLiked: isLiked,
+		volume: 0.5,
+	};
+};
+
 /**
  * Updates the liked status cookie for the current song
  *
@@ -159,4 +182,10 @@ export const setAudioBarCookies = async (
  */
 export const setLikedSongCookie = async (isLiked: boolean) => {
 	(await cookies()).set("isCurrentlyLiked", isLiked ? "true" : "false");
+};
+
+export const getLikedSongCookie = async () => {
+	return (await cookies()).get("isCurrentlyLiked")?.value === "true"
+		? true
+		: false;
 };
