@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 import { Heart, Loader2 } from "lucide-react";
-import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
-import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
 import { setLikedSongCookie } from "@/lib/server-utils";
+import { useAtom } from "jotai";
+import audioBarAtom from "./atoms/audio-bar-atom";
 
 /**
  * Props for the LikeSongButton component
@@ -48,8 +48,7 @@ const LikeSongButton = ({
 	className,
 }: LikeSongButtonProps) => {
 	const [isLiked, setIsLiked] = useState(isLikedInitially);
-	const audioBar = useAudioBarContext();
-	const audioBarDispatch = useAudioBarDispatchContext();
+	const [audioBar, setAudioBar] = useAtom(audioBarAtom);
 	const { pending } = useFormStatus();
 
 	// Icon definitions for different states
@@ -64,12 +63,12 @@ const LikeSongButton = ({
 	// Update global audio player state when like status changes
 	useEffect(() => {
 		if (audioBar.songID === songID?.toString()) {
-			audioBarDispatch({
-				type: "SET_IS_LIKED",
-				payload: isLiked,
+			setAudioBar({
+				...audioBar,
+				isLiked: isLiked,
 			});
 		}
-	}, [isLiked, audioBar.songID, audioBarDispatch, songID]);
+	}, [isLiked, audioBar.songID, songID]);
 
 	// Update cookie when like status changes for current audio player song
 	useEffect(() => {

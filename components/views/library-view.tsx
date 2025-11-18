@@ -10,6 +10,45 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { fetchLikedSongIDs } from "@/lib/server-utils";
 
+let songs = await db
+	.selectFrom("songs")
+	.innerJoin("albums", "songs.album_id", "albums.id")
+	.innerJoin("artists", "albums.artist_id", "artists.id")
+	.select([
+		"songs.id",
+		"songs.name",
+		"songs.year",
+		"songs.audio",
+		"artists.name as artist",
+		"albums.name as album",
+		"albums.image_src as albumArt",
+	])
+	.execute();
+let albums = await db
+	.selectFrom("albums")
+	.innerJoin("artists", "albums.artist_id", "artists.id")
+	.select([
+		"albums.id",
+		"albums.name",
+		"albums.year",
+		"albums.image_src",
+		"artists.name as artist",
+	])
+	.execute();
+let artists = await db
+	.selectFrom("artists")
+	.select(["id", "name", "image_src as image"])
+	.execute();
+
+// Shuffle arrays and limit to 10 items each
+shuffleArray(songs);
+shuffleArray(albums);
+shuffleArray(artists);
+
+songs = songs.slice(0, 10);
+albums = albums.slice(0, 10);
+artists = artists.slice(0, 10);
+
 /**
  * Library view component that displays a curated selection of music content.
  * Fetches and displays randomized lists of songs, albums, and artists from the database.
@@ -18,48 +57,9 @@ import { fetchLikedSongIDs } from "@/lib/server-utils";
  * @returns JSX element containing the library view with shuffled content lists
  */
 const LibraryView = async () => {
-	let songs = await db
-		.selectFrom("songs")
-		.innerJoin("albums", "songs.album_id", "albums.id")
-		.innerJoin("artists", "albums.artist_id", "artists.id")
-		.select([
-			"songs.id",
-			"songs.name",
-			"songs.year",
-			"songs.audio",
-			"artists.name as artist",
-			"albums.name as album",
-			"albums.image_src as albumArt",
-		])
-		.execute();
-	let albums = await db
-		.selectFrom("albums")
-		.innerJoin("artists", "albums.artist_id", "artists.id")
-		.select([
-			"albums.id",
-			"albums.name",
-			"albums.year",
-			"albums.image_src",
-			"artists.name as artist",
-		])
-		.execute();
-	let artists = await db
-		.selectFrom("artists")
-		.select(["id", "name", "image_src as image"])
-		.execute();
-
 	const userID =
 		(await auth.api.getSession({ headers: await headers() }))?.user.id ?? "";
 	const likedSongIDs = await fetchLikedSongIDs(userID);
-
-	// Shuffle arrays and limit to 10 items each
-	shuffleArray(songs);
-	shuffleArray(albums);
-	shuffleArray(artists);
-
-	songs = songs.slice(0, 10);
-	albums = albums.slice(0, 10);
-	artists = artists.slice(0, 10);
 
 	return (
 		<Card className="w-full">

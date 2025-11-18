@@ -5,8 +5,8 @@ import { getFormattedDuration } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { TableCell, TableRow } from "./ui/table";
 import LikeSongButton from "./like-song-button";
-import { useAudioBarDispatchContext } from "@/hooks/use-audio-bar-dispatch-context";
-import { useAudioBarContext } from "@/hooks/use-audio-bar-context";
+import { useAtom } from "jotai";
+import audioBarAtom from "./atoms/audio-bar-atom";
 
 /**
  * Props for the AlbumSongItem component
@@ -43,8 +43,7 @@ type AlbumSongItemProps = {
  */
 const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
 	const [isLiked, setIsLiked] = useState(song.liked);
-	const audioBar = useAudioBarContext();
-	const audioBarDispatch = useAudioBarDispatchContext();
+	const [audioBar, setAudioBar] = useAtom(audioBarAtom);
 
 	// Sync like status when this song becomes the active song in audio player
 	useEffect(() => {
@@ -57,45 +56,15 @@ const AlbumSongItem = ({ song, className }: AlbumSongItemProps) => {
 	 * Handles song selection and audio player state updates
 	 */
 	const onSongItemClicked = async () => {
-		// Update all audio player state via dispatch actions
-		audioBarDispatch({
-			type: "SET_SONG_ID",
-			payload: song.id!.toString(),
-		});
-
-		audioBarDispatch({
-			type: "SET_SONG_NAME",
-			payload: song.name,
-		});
-
-		audioBarDispatch({
-			type: "SET_ARTIST",
-			payload: song.artist,
-		});
-
-		audioBarDispatch({
-			type: "SET_ALBUM",
-			payload: song.album,
-		});
-
-		audioBarDispatch({
-			type: "SET_YEAR",
-			payload: song.year.toString(),
-		});
-
-		audioBarDispatch({
-			type: "SET_ALBUM_ART",
-			payload: song.albumArt,
-		});
-
-		audioBarDispatch({
-			type: "SET_AUDIO_SRC",
-			payload: song.audio,
-		});
-
-		audioBarDispatch({
-			type: "SET_IS_LIKED",
-			payload: song.liked,
+		setAudioBar({
+			...audioBar,
+			songID: song.id?.toString() || "",
+			songName: song.name,
+			artist: song.artist,
+			album: song.album,
+			albumArt: song.albumArt,
+			audioSrc: song.audio,
+			isLiked: isLiked,
 		});
 
 		// Persist state in browser cookies for session continuity
